@@ -29,21 +29,10 @@
 				}
 			}
 		},
-		{
-		    "path" : "pages/details/videoDetails",
-		    "style" : {
-				"navigationBarTitleText" : "",
-				"app-plus": {
-					"titleNView": false,
-					"navigationBarTextStyle": "white",
-					"bounce": "none"
-				}
-			}
-		}
-        ,{
+        {
             "path" : "pages/nvue/nvue",
             "style" : {
-            	"navigationBarTitleText" : "首页",
+            	"navigationBarTitleText" : "串",
             	"app-plus": {
             		// #ifdef APP-PLUS
             		"titleNView": false,
@@ -52,6 +41,10 @@
             		"bounce": "none"
             	}
             }
+        }
+        ,{
+            "path" : "pages/index/index",
+            "style" : {}
         }
     ],
 	"globalStyle": {

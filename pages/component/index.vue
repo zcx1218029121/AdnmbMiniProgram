@@ -1,5 +1,5 @@
 <template>
-	<view class="pager-content">
+	<view class="content">
 		<!--
 		* 广告组件
 		* timedown 倒计时时间
@@ -40,10 +40,9 @@
 							<view class="cu-item shadow">
 								<view class="cu-list menu-avatar">
 									<view class="cu-item">
-										<view class="cu-avatar lg round bg-red"> A</view>
-										
+										<view class="cu-avatar round lg" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
 										<view class="content flex-sub">
-											<view>ATM</view>
+											<view>凯尔</view>
 											<view class="text-gray text-sm flex justify-between">
 												2019年12月3日
 											</view>
@@ -59,6 +58,8 @@
 									</view>
 								</view>
 								<view class="text-gray text-sm text-right padding">
+									<text class="cuIcon-attentionfill margin-lr-xs"></text> 10
+									<text class="cuIcon-appreciatefill margin-lr-xs"></text> 20
 									<text class="cuIcon-messagefill margin-lr-xs"></text> 30
 								</view>
 						
@@ -302,7 +303,7 @@
 		height: 100%;
 		overflow: hidden;
 	}
-	.pager-content{
+	.content{
 		height: 100%;
 		overflow: hidden;
 	}

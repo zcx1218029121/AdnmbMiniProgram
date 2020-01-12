@@ -104,11 +104,11 @@
 /******/
 /******/
 /******/ 		// mini-css-extract-plugin CSS loading
-/******/ 		var cssChunks = {"components/mix-advert/vue/mix-advert":1,"components/mix-load-more/mix-load-more":1,"components/mix-pulldown-refresh/mix-pulldown-refresh":1,"components/mix-loading/mix-loading":1};
+/******/ 		var cssChunks = {"components/mix-load-more/mix-load-more":1,"components/mix-pulldown-refresh/mix-pulldown-refresh":1,"components/mix-loading/mix-loading":1};
 /******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
 /******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
 /******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
-/******/ 				var href = "" + ({"components/mix-advert/vue/mix-advert":"components/mix-advert/vue/mix-advert","components/mix-load-more/mix-load-more":"components/mix-load-more/mix-load-more","components/mix-pulldown-refresh/mix-pulldown-refresh":"components/mix-pulldown-refresh/mix-pulldown-refresh","components/mix-loading/mix-loading":"components/mix-loading/mix-loading"}[chunkId]||chunkId) + ".wxss";
+/******/ 				var href = "" + ({"components/mix-load-more/mix-load-more":"components/mix-load-more/mix-load-more","components/mix-pulldown-refresh/mix-pulldown-refresh":"components/mix-pulldown-refresh/mix-pulldown-refresh","components/mix-loading/mix-loading":"components/mix-loading/mix-loading"}[chunkId]||chunkId) + ".wxss";
 /******/ 				var fullhref = __webpack_require__.p + href;
 /******/ 				var existingLinkTags = document.getElementsByTagName("link");
 /******/ 				for(var i = 0; i < existingLinkTags.length; i++) {
