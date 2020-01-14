@@ -46,6 +46,10 @@
             "path" : "pages/index/index",
             "style" : {}
         }
+        ,{
+            "path" : "pages/me/me",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

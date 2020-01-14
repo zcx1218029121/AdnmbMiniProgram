@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "组件使用示例",
+  "bounce": "none",
+  "usingComponents": {
+    "mix-pulldown-refresh": "/components/mix-pulldown-refresh/mix-pulldown-refresh",
+    "mix-load-more": "/components/mix-load-more/mix-load-more"
+  }
+}

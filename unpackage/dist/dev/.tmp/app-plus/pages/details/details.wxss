@@ -74,9 +74,8 @@ page {
     font-size: 26rpx;
     color: #909399;
 }
-.introduce-section .introduce .show-icon {
-      font-size: 34rpx;
-      padding-left: 10rpx;
+.introduce-section .introduce text {
+      margin-right: 16rpx;
 }
 /* 点赞等操作 */
 .actions {
@@ -84,13 +83,15 @@ page {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
   -webkit-box-align: center;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   line-height: 1.3;
-  padding-right: 44rpx;
-  padding-top: 16rpx;
+  padding: 10rpx 40rpx 20rpx;
 }
 .actions .action-item {
     display: -webkit-box;
@@ -110,7 +111,6 @@ page {
     -webkit-justify-content: center;
         -ms-flex-pack: center;
             justify-content: center;
-    margin-right: 60rpx;
     font-size: 24rpx;
     color: #999;
 }
@@ -147,11 +147,6 @@ page {
 }
 .actions .icon-shoucang {
     font-size: 44rpx;
-}
-.mix-loading {
-  -webkit-transform: translateY(140rpx);
-      -ms-transform: translateY(140rpx);
-          transform: translateY(140rpx);
 }
 .s-header {
   padding: 20rpx 30rpx;
@@ -199,6 +194,7 @@ page {
     padding-right: 10rpx;
     overflow: hidden;
     position: relative;
+    padding-bottom: 52rpx;
 }
 .rec-section .left .title {
       display: -webkit-box;
@@ -230,30 +226,6 @@ page {
 .rec-section .right .img {
       width: 100%;
       height: 100%;
-}
-.rec-section .right .video-tip {
-      position: absolute;
-      left: 0;
-      top: 0;
-      display: -webkit-box;
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-      -webkit-align-items: center;
-          -ms-flex-align: center;
-              align-items: center;
-      -webkit-box-pack: center;
-      -webkit-justify-content: center;
-          -ms-flex-pack: center;
-              justify-content: center;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.3);
-}
-.rec-section .right .video-tip image {
-        width: 60rpx;
-        height: 60rpx;
 }
 /* 评论 */
 .evalution {

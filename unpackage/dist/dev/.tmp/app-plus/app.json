@@ -1,0 +1,37 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/component/component",
+    "pages/details/details",
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "新闻模版",
+    "navigationBarBackgroundColor": "#ec706b",
+    "backgroundColor": "#f8f8f8"
+  },
+  "nvue": {
+    "pages": {
+      "pages/nvue/nvue.html": {
+        "window": {
+          "usingComponents": {},
+          "navigationBarTitleText": "串",
+          "titleNView": false,
+          "navigationBarTextStyle": "white",
+          "bounce": "none"
+        },
+        "nvue": true
+      }
+    }
+  },
+  "nvueCompiler": "weex",
+  "renderer": "auto",
+  "splashscreen": {
+    "alwaysShowBeforeRender": true,
+    "autoclose": false
+  },
+  "appname": "AdnmbMiniProgram",
+  "compilerVersion": "2.3.3",
+  "usingComponents": {}
+}

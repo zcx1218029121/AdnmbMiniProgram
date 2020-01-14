@@ -8400,7 +8400,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/component/component": { "navigationBarTitleText": "组件使用示例" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/details/videoDetails": { "navigationBarTitleText": "" }, "pages/nvue/nvue": { "navigationBarTitleText": "首页" } }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "新闻模版", "navigationBarBackgroundColor": "#ec706b", "backgroundColor": "#f8f8f8" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "usingComponents": {} }, "pages/component/component": { "navigationBarTitleText": "组件使用示例" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/nvue/nvue": { "navigationBarTitleText": "串" }, "pages/me/me": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "新闻模版", "navigationBarBackgroundColor": "#ec706b", "backgroundColor": "#f8f8f8" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
@@ -8525,24 +8525,290 @@ function normalizeComponent (
 
 
 /***/ }),
-/* 15 */,
-/* 16 */,
+/* 15 */
+/*!************************************************************************************!*\
+  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/common/vmeitime-http/index.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.main = exports.banner = exports.test = void 0;var _interface = _interopRequireDefault(__webpack_require__(/*! ./interface */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+/**
+                                                                                                                                                                                                                                                                                                                  * 将业务所有接口统一起来便于维护
+                                                                                                                                                                                                                                                                                                                  * 如果项目很大可以将 url 独立成文件，接口分成不同的模块
+                                                                                                                                                                                                                                                                                                                  * 
+                                                                                                                                                                                                                                                                                                                  */
+
+// 单独导出(测试接口) import {test} from '@/common/vmeitime-http/'
+var test = function test(data) {
+  /* http.config.baseUrl = "http://localhost:8080/api/"
+                                //设置请求前拦截器
+                                http.interceptor.request = (config) => {
+                                	config.header = {
+                                		"token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                                	}
+                                } */
+  //设置请求结束后拦截器
+  _interface.default.interceptor.response = function (response) {
+    console.log('个性化response....');
+    //判断返回状态 执行相应操作
+    return response;
+  };
+  return _interface.default.request({
+    baseUrl: 'https://unidemo.dcloud.net.cn/',
+    url: 'ajax/echo/text?name=uni-app',
+    dataType: 'text',
+    data: data });
+
+};
+
+// 轮播图
+exports.test = test;var banner = function banner(data) {
+  return _interface.default.request({
+    url: '/banner/36kr',
+    method: 'GET',
+    data: data
+    // handle:true
+  });
+};exports.banner = banner;
+
+var main = function main(data) {
+  return _interface.default.request({
+    url: 'Api/showf?id=4s&page=1',
+    method: 'GET',
+    data: data });
+
+};
+
+
+// 默认全部导出  import api from '@/common/vmeitime-http/'
+exports.main = main;var _default = {
+  test: test,
+  banner: banner,
+  main: main };exports.default = _default;
+
+/***/ }),
+/* 16 */
+/*!****************************************************************************************!*\
+  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/common/vmeitime-http/interface.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} /**
+                                                                                                                                                                                                                                                                                                                * 通用uni-app网络请求
+                                                                                                                                                                                                                                                                                                                * 基于 Promise 对象实现更简单的 request 使用方式，支持请求和响应拦截
+                                                                                                                                                                                                                                                                                                                */
+
+/*
+                                                                                                                                                                                                                                                                                                                   // 开放的接口
+                                                                                                                                                                                                                                                                                                                   import http from './interface'
+                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                   http.config.baseUrl = "http://localhost:8080/api/"
+                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                   http.request(url:'user/list',method:'GET').then((res)=>{
+                                                                                                                                                                                                                                                                                                                   	console.log(JSON.stringify(res))
+                                                                                                                                                                                                                                                                                                                   })
+                                                                                                                                                                                                                                                                                                                   http.get('user/list').then((res)=>{
+                                                                                                                                                                                                                                                                                                                   	console.log(JSON.stringify(res))
+                                                                                                                                                                                                                                                                                                                   })
+                                                                                                                                                                                                                                                                                                                   http.get('user/list', {status: 1}).then((res)=>{
+                                                                                                                                                                                                                                                                                                                   	console.log(JSON.stringify(res))
+                                                                                                                                                                                                                                                                                                                   })
+                                                                                                                                                                                                                                                                                                                   http.post('user', {id:1, status: 1}).then((res)=>{
+                                                                                                                                                                                                                                                                                                                   	console.log(JSON.stringify(res))
+                                                                                                                                                                                                                                                                                                                   })
+                                                                                                                                                                                                                                                                                                                   http.put('user/1', {status: 2}).then((res)=>{
+                                                                                                                                                                                                                                                                                                                   	console.log(JSON.stringify(res))
+                                                                                                                                                                                                                                                                                                                   })
+                                                                                                                                                                                                                                                                                                                   http.delete('user/1').then((res)=>{
+                                                                                                                                                                                                                                                                                                                   	console.log(JSON.stringify(res))
+                                                                                                                                                                                                                                                                                                                   }) 
+                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                   */var _default =
+{
+  config: {
+    baseUrl: "https://adnmb2.com/",
+    header: _defineProperty({
+      'Content-Type': 'application/json;charset=UTF-8' }, "Content-Type",
+    'application/x-www-form-urlencoded'),
+
+    data: {},
+    method: "GET",
+    dataType: "json", /* 如设为json，会对返回的数据做一次 JSON.parse */
+    responseType: "text",
+    success: function success() {},
+    fail: function fail() {},
+    complete: function complete() {} },
+
+  interceptor: {
+    request: null,
+    response: null },
+
+  request: function request(options) {var _this = this;
+    if (!options) {
+      options = {};
+    }
+    options.baseUrl = options.baseUrl || this.config.baseUrl;
+    options.dataType = options.dataType || this.config.dataType;
+    options.url = options.baseUrl + options.url;
+    options.data = options.data || {};
+    options.method = options.method || this.config.method;
+    //TODO 加密数据
+
+    //TODO 数据签名
+    /* 
+    _token = {'token': getStorage(STOREKEY_LOGIN).token || 'undefined'},
+    _sign = {'sign': sign(JSON.stringify(options.data))}
+    options.header = Object.assign({}, options.header, _token,_sign) 
+    */
+
+    return new Promise(function (resolve, reject) {
+      var _config = null;
+
+      options.complete = function (response) {
+        var statusCode = response.statusCode;
+        response.config = _config;
+        if (true) {
+          if (statusCode === 200) {
+            console.log("【" + _config.requestId + "】 结果：" + JSON.stringify(response.data));
+          }
+        }
+        if (_this.interceptor.response) {
+          var newResponse = _this.interceptor.response(response);
+          if (newResponse) {
+            response = newResponse;
+          }
+        }
+        // 统一的响应日志记录
+        _reslog(response);
+        if (statusCode === 200) {//成功
+          resolve(response);
+        } else {
+          reject(response);
+        }
+      };
+
+      _config = Object.assign({}, _this.config, options);
+      _config.requestId = new Date().getTime();
+
+      if (_this.interceptor.request) {
+        _this.interceptor.request(_config);
+      }
+
+      // 统一的请求日志记录
+      _reqlog(_config);
+
+      if (true) {
+        console.log("【" + _config.requestId + "】 地址：" + _config.url);
+        if (_config.data) {
+          console.log("【" + _config.requestId + "】 参数：" + JSON.stringify(_config.data));
+        }
+      }
+
+      uni.request(_config);
+    });
+  },
+  get: function get(url, data, options) {
+    if (!options) {
+      options = {};
+    }
+    options.url = url;
+    options.data = data;
+    options.method = 'GET';
+    return this.request(options);
+  },
+  post: function post(url, data, options) {
+    if (!options) {
+      options = {};
+    }
+    options.url = url;
+    options.data = data;
+    options.method = 'POST';
+    return this.request(options);
+  },
+  put: function put(url, data, options) {
+    if (!options) {
+      options = {};
+    }
+    options.url = url;
+    options.data = data;
+    options.method = 'PUT';
+    return this.request(options);
+  },
+  delete: function _delete(url, data, options) {
+    if (!options) {
+      options = {};
+    }
+    options.url = url;
+    options.data = data;
+    options.method = 'DELETE';
+    return this.request(options);
+  } };
+
+
+
+/**
+        * 请求接口日志记录
+        */exports.default = _default;
+function _reqlog(req) {
+  if (true) {
+    console.log("【" + req.requestId + "】 地址：" + req.url);
+    if (req.data) {
+      console.log("【" + req.requestId + "】 请求参数：" + JSON.stringify(req.data));
+    }
+  }
+  //TODO 调接口异步写入日志数据库
+}
+
+/**
+   * 响应接口日志记录
+   */
+function _reslog(res) {
+  var _statusCode = res.statusCode;
+  if (true) {
+    console.log("【" + res.config.requestId + "】 地址：" + res.config.url);
+    if (res.config.data) {
+      console.log("【" + res.config.requestId + "】 请求参数：" + JSON.stringify(res.config.data));
+    }
+    console.log("【" + res.config.requestId + "】 响应结果：" + JSON.stringify(res));
+  }
+  //TODO 除了接口服务错误外，其他日志调接口异步写入日志数据库
+  switch (_statusCode) {
+    case 200:
+      break;
+    case 401:
+      break;
+    case 404:
+      break;
+    default:
+      break;}
+
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 17 */,
 /* 18 */,
 /* 19 */,
 /* 20 */,
-/* 21 */
+/* 21 */,
+/* 22 */,
+/* 23 */
 /*!**********************************************************!*\
   !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
   \**********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! regenerator-runtime */ 22);
+module.exports = __webpack_require__(/*! regenerator-runtime */ 24);
 
 
 /***/ }),
-/* 22 */
+/* 24 */
 /*!************************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
   \************************************************************/
@@ -8573,7 +8839,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(/*! ./runtime */ 23);
+module.exports = __webpack_require__(/*! ./runtime */ 25);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -8589,7 +8855,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 23 */
+/* 25 */
 /*!*****************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime.js ***!
   \*****************************************************/
@@ -9320,7 +9586,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 24 */
+/* 26 */
 /*!**************************************************************!*\
   !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/json.js ***!
   \**************************************************************/
@@ -9329,31 +9595,31 @@ if (hadRuntime) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var tabList = [{
-  name: '关注',
+  name: '时间线',
   id: '1' },
 {
-  name: '推荐',
+  name: '欢乐恶搞',
   id: '2' },
 {
-  name: '体育',
+  name: '综合1',
   id: '3' },
 {
-  name: '热点',
+  name: '欢乐恶搞',
   id: '4' },
 {
-  name: '财经',
+  name: '欢乐恶搞',
   id: '5' },
 {
-  name: '娱乐',
+  name: '欢乐恶搞',
   id: '6' },
 {
-  name: '军事',
+  name: '欢乐恶搞',
   id: '7' },
 {
-  name: '历史',
+  name: '欢乐恶搞',
   id: '8' },
 {
-  name: '本地',
+  name: '欢乐恶搞',
   id: '9' }];
 
 var newsList = [{

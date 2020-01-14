@@ -36,7 +36,7 @@
 						@scrolltolower="loadMore"
 						>
 	
-						<view class="cu-card dynamic" :class="isCard?'no-card':''">
+						<view v-for="(item, index) in tabItem.newsList" :key="index" class="cu-card dynamic" @click="navToDetails(item)">
 							<view class="cu-item shadow">
 								<view class="cu-list menu-avatar">
 									<view class="cu-item">
@@ -106,6 +106,7 @@
 		},
 		data() {
 			return {
+				isCard : false,
 				tabCurrentIndex: 0, //当前选项卡索引
 				scrollLeft: 0, //顶部选项卡左滑距离
 				enableScroll: true,
@@ -126,10 +127,16 @@
 			// 获取屏幕宽度
 			windowWidth = uni.getSystemInfoSync().windowWidth;
 			this.loadTabbars();
+			this.$api.main('123').then((res)=>{
+					this.loading = false;
+					console.log('request success', res)
+					this.res = '请求结果 : ' + JSON.stringify(res);
+				})
+				
+			
 		},
 		onReady(){
 			
-			this.$refs.mixAdvert.initAdvert();
 		
 		},
 		methods: {
