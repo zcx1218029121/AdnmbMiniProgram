@@ -223,7 +223,7 @@ page {
   padding: 20rpx 30rpx;
   position: relative;
 }
-.eva-item image {
+.eva-item .image {
     width: 60rpx;
     height: 60rpx;
     border-radius: 50px;

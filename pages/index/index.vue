@@ -44,10 +44,11 @@
 									</view>
 								</view>
 								<view class="text-content"style=" white-space: pre-wrap;">
-									{{item.content}}
+									<rich-text :nodes="item.content"></rich-text>
+									<!-- {{item.content}} -->
 								</view>
 								<view class="grid flex-sub padding-lr" :class="isCard?'col-3 grid-square':'col-1'">
-									<view class="bg-img" :class="isCard?'':'only-img'" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);">
+									<view v-if="item.img" class="bg-img" :class="isCard?'':'only-img'" :style="'background-image:url(https://nmbimg.fastmirror.org/thumb/'+item.img+item.ext+');'">
 									</view>
 								</view>
 								<view class="text-gray text-sm text-right padding">
@@ -88,6 +89,7 @@
 
 <script>
 	import json from '@/json'
+	import util from '@/util'
 	import mixPulldownRefresh from '@/components/mix-pulldown-refresh/mix-pulldown-refresh';
 	import mixLoadMore from '@/components/mix-load-more/mix-load-more';
 	let windowWidth = 0, scrollTimer = false, tabBar;
@@ -171,7 +173,7 @@
 						}
 						list.forEach(item=>{
 							item.icon = item.userid.substring(0,1)
-							item.bg = json.colorlist[parseInt(Math.random()*11 +1)]
+							item.bg = util.getRandomBackground()
 							tabItem.newsList.push(item);
 	
 						})
@@ -195,9 +197,10 @@
 			navToDetails(item){
 				let data = {
 					id: item.id,
-					title: item.content,
-					author: item.author,
-					time: item.time
+					title: item.id,
+					author: item.userid,
+					time: item.time,
+					replyCount:item.replyCount
 				}
 				let url = item.videoSrc ? 'videoDetails' : 'details'; 
 

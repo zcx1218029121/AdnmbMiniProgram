@@ -45,6 +45,7 @@ export const main = (id,index) => {
         method: 'GET'
     })
 }
+// 该方法 不可用 微信只支持 https的协议
 export const getClass = () => {
 	return http.request({
 		baseUrl: 'http://cover.acfunwiki.org/',
@@ -52,12 +53,18 @@ export const getClass = () => {
 		method: 'GET'
 	})
 }
+export const getInfo = (id,index) =>{
+	return http.request({
+		baseUrl:'https://nmb.fastmirror.org/',
+		url:'Api/thread?id='+id+'&page='+index,
+		method: 'GET'
+	})
+}
 
 
 // 默认全部导出  import api from '@/common/vmeitime-http/'
 export default {
-	test,
-    banner,
 	main,
-	getClass
+	getClass,
+	getInfo
 }

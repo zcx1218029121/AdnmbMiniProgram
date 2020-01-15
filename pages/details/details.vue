@@ -4,15 +4,17 @@
 		<scroll-view class="scroll" scroll-y>
 			<view class="scroll-content">
 				<view class="introduce-section">
-					<text class="title">{{detailData.title}}</text>
+					<text class="title">NO.{{detailData.title}}</text>
 					<view class="introduce">
 						<text>{{detailData.author}}</text>
-						<text>105阅读</text>
+						<text>{{detailData.replyCount}} 回复</text>
 						<text>{{detailData.time}}</text>
 					</view>
 					
-					<rich-text :nodes="detailData.flow"></rich-text>
-					
+					<rich-text :nodes="info.data.content"></rich-text>
+					<view class="grid flex-sub padding-lr" :class="isCard?'col-3 grid-square':'col-1'">
+					<view  class="bg-img" :class="isCard?'':'only-img'" :style="'background-image:url(https://nmbimg.fastmirror.org/image/'+info.data.img+info.data.ext+');height:200px;'"></view>
+					</view>
 					<view class="actions" v-show="loading === false">
 						<view class="action-item">
 							<text class="yticon icon-dianzan-ash"></text>
@@ -36,7 +38,7 @@
 				<view class="container" v-show="loading === false">
 					<!-- 推荐 -->
 					<view class="s-header">
-						<text class="tit">相关推荐</text>
+						<text class="tit">广告</text>
 					</view>
 					<view class="rec-section" v-for="item in newsList" :key="item.id">
 						<view class="rec-item">
@@ -55,21 +57,21 @@
 					
 					<!-- 评论 -->
 					<view class="s-header">
-						<text class="tit">网友评论</text>
+						<text class="tit">回复</text>
 					</view>
 					<view class="evalution">
-						<view  v-for="(item, index) in evaList" :key="index"
+						<view  v-for="(item, index) in  replyList" :key="index"
 							class="eva-item"
 						>
-							<image :src="item.src" mode="aspectFill"></image>
+							<view :class="'cu-avatar lg round image bg-'+item.icon">{{item.iconNumber}}</view>
 							<view class="eva-right">
-								<text>{{item.nickname}}</text>
-								<text>{{item.time}}</text>
+								<text>{{item.userid}}</text>
+								<text>{{item.now}}</text>
 								<view class="zan-box">
 									<text>{{item.zan}}</text>
 									<text class="yticon icon-shoucang"></text>
 								</view>
-								<text class="content">{{item.content}}</text>
+								<rich-text class="content" :nodes="item.content"></rich-text>
 							</view>
 						</view>
 					</view>
@@ -97,6 +99,7 @@
 <script>
 	import json from '@/json';
 	import mixLoading from '@/components/mix-loading/mix-loading';
+	import util from '@/util'
 	export default {
 		components: {
 			mixLoading
@@ -105,14 +108,16 @@
 			return {
 				loading: true,
 				detailData: {},
+				info:{},
 				newsList: [],
 				evaList: [],
+				replyList:[]
 			}
 		},
 		onLoad(options){
 			this.detailData = JSON.parse(options.data);
+			this.loadDetail(this.detailData.title,1)
 			this.loadNewsList();
-			this.loadEvaList();
 		},
 		methods: {
 			//获取推荐列表
@@ -131,9 +136,17 @@
 					this.loading = false;
 				}, 1000)
 			},
-			//获取评论列表
-			async loadEvaList(){
-				this.evaList = await json.evaList;
+			 loadDetail(id,page){
+				this.$api.getInfo(id,1).then((res)=>{
+					
+					this.info = res
+					for(var i =1 ;i <res.data.replys.length;i++){
+						let item = res.data.replys[i];
+						item.iconNumber = item.userid.substring(0,1) 
+						item.icon = util.getRandomBackground()
+						this.replyList.push(item)
+					}
+				})
 			}
 		}
 	}
@@ -314,7 +327,7 @@
 		display:flex;
 		padding: 20upx 30upx;
 		position: relative;
-		image{
+		.image{
 			width: 60upx;
 			height: 60upx;
 			border-radius: 50px;
