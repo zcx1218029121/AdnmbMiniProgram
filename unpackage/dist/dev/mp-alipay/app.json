@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/component/component",
+    "pages/details/details",
+    "pages/nvue/nvue"
+  ],
+  "subPackages": [],
+  "window": {
+    "defaultTitle": "新闻模版",
+    "backgroundColor": "#f8f8f8"
+  },
+  "usingComponents": {}
+}

@@ -3,17 +3,14 @@
     "pages/index/index",
     "pages/component/component",
     "pages/details/details",
-    "pages/nvue/nvue",
-    "pages/index/index",
-    "pages/me/me"
+    "pages/nvue/nvue"
   ],
   "subPackages": [],
   "window": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "新闻模版",
-    "navigationBarBackgroundColor": "#ec706b",
     "backgroundColor": "#f8f8f8"
   },
   "usingComponents": {},
-  "sitemapLocation": "sitemap57.json"
+  "sitemapLocation": "sitemap18.json"
 }

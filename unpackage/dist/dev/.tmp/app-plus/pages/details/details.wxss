@@ -9,12 +9,10 @@ page {
 .content {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
           flex-direction: column;
   height: 100%;
   background: #fff;
@@ -29,7 +27,6 @@ page {
 .scroll {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
-      -ms-flex: 1;
           flex: 1;
   position: relative;
   background-color: #f8f8f8;
@@ -38,24 +35,20 @@ page {
 .scroll-content {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
           flex-direction: column;
 }
 /* 简介 */
 .introduce-section {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
           flex-direction: column;
   padding: 20rpx 30rpx;
   background: #fff;
@@ -69,7 +62,6 @@ page {
 .introduce-section .introduce {
     display: -webkit-box;
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     font-size: 26rpx;
     color: #909399;
@@ -81,14 +73,11 @@ page {
 .actions {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-justify-content: space-around;
-      -ms-flex-pack: distribute;
           justify-content: space-around;
   -webkit-box-align: center;
   -webkit-align-items: center;
-      -ms-flex-align: center;
           align-items: center;
   line-height: 1.3;
   padding: 10rpx 40rpx 20rpx;
@@ -96,20 +85,16 @@ page {
 .actions .action-item {
     display: -webkit-box;
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -webkit-flex-direction: column;
-        -ms-flex-direction: column;
             flex-direction: column;
     -webkit-box-align: center;
     -webkit-align-items: center;
-        -ms-flex-align: center;
             align-items: center;
     -webkit-box-pack: center;
     -webkit-justify-content: center;
-        -ms-flex-pack: center;
             justify-content: center;
     font-size: 24rpx;
     color: #999;
@@ -117,15 +102,12 @@ page {
 .actions .yticon {
     display: -webkit-box;
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
     -webkit-align-items: center;
-        -ms-flex-align: center;
             align-items: center;
     -webkit-box-pack: center;
     -webkit-justify-content: center;
-        -ms-flex-pack: center;
             justify-content: center;
     width: 60rpx;
     height: 60rpx;
@@ -135,7 +117,6 @@ page {
       position: relative;
       top: 6rpx;
       -webkit-transform: scaleY(-1);
-          -ms-transform: scaleY(-1);
               transform: scaleY(-1);
 }
 .actions .yticon.active {
@@ -169,7 +150,6 @@ page {
 .rec-section .rec-item {
     display: -webkit-box;
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     padding: 20rpx 30rpx;
     position: relative;
@@ -183,13 +163,11 @@ page {
       height: 0;
       border-bottom: 1px solid #eee;
       -webkit-transform: scaleY(50%);
-          -ms-transform: scaleY(50%);
               transform: scaleY(50%);
 }
 .rec-section .left {
     -webkit-box-flex: 1;
     -webkit-flex: 1;
-        -ms-flex: 1;
             flex: 1;
     padding-right: 10rpx;
     overflow: hidden;
@@ -219,7 +197,6 @@ page {
     width: 220rpx;
     height: 140rpx;
     -webkit-flex-shrink: 0;
-        -ms-flex-negative: 0;
             flex-shrink: 0;
     position: relative;
 }
@@ -231,12 +208,10 @@ page {
 .evalution {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
           flex-direction: column;
   background: #fff;
   padding: 20rpx 0;
@@ -244,7 +219,6 @@ page {
 .eva-item {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   padding: 20rpx 30rpx;
   position: relative;
@@ -254,7 +228,6 @@ page {
     height: 60rpx;
     border-radius: 50px;
     -webkit-flex-shrink: 0;
-        -ms-flex-negative: 0;
             flex-shrink: 0;
     margin-right: 24rpx;
 }
@@ -267,7 +240,6 @@ page {
     height: 0;
     border-bottom: 1px solid #eee;
     -webkit-transform: translateY(50%);
-        -ms-transform: translateY(50%);
             transform: translateY(50%);
 }
 .eva-item:last-child:after {
@@ -276,16 +248,13 @@ page {
 .eva-right {
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
           flex-direction: column;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
-      -ms-flex: 1;
           flex: 1;
   font-size: 26rpx;
   color: #909399;
@@ -294,11 +263,9 @@ page {
 .eva-right .zan-box {
     display: -webkit-box;
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-align: base-line;
     -webkit-align-items: base-line;
-        -ms-flex-align: base-line;
             align-items: base-line;
     position: absolute;
     top: 10rpx;
@@ -315,35 +282,28 @@ page {
 /* 底部 */
 .bottom {
   -webkit-flex-shrink: 0;
-      -ms-flex-negative: 0;
           flex-shrink: 0;
   display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
   -webkit-align-items: center;
-      -ms-flex-align: center;
           align-items: center;
   height: 90rpx;
   padding: 0 30rpx;
-  -webkit-box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.04);
-          box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.04);
   position: relative;
   z-index: 1;
 }
 .bottom .input-box {
     display: -webkit-box;
     display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     -webkit-box-align: center;
     -webkit-align-items: center;
-        -ms-flex-align: center;
             align-items: center;
     -webkit-box-flex: 1;
     -webkit-flex: 1;
-        -ms-flex: 1;
             flex: 1;
     height: 60rpx;
     background: #f2f3f3;

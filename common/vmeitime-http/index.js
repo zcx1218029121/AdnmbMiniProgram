@@ -39,12 +39,18 @@ export const banner = (data) => {
     })
 }
 
-export const main = (data) => {
+export const main = (id,index) => {
     return http.request({
-        url: 'Api/showf?id=4s&page=1',
-        method: 'GET', 
-		data,
+        url: 'Api/showf?id='+id+'s&page='+index,
+        method: 'GET'
     })
+}
+export const getClass = () => {
+	return http.request({
+		baseUrl: 'http://cover.acfunwiki.org/',
+		url:'luwei.json?appid=e31c86032f0d607c&__t=1577944306659',
+		method: 'GET'
+	})
 }
 
 
@@ -52,5 +58,6 @@ export const main = (data) => {
 export default {
 	test,
     banner,
-	main
+	main,
+	getClass
 }

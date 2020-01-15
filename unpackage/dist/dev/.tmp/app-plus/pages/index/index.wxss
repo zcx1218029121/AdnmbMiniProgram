@@ -18,8 +18,7 @@ page {
   z-index: 10;
   height: 90rpx;
   white-space: nowrap;
-  -webkit-box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
-          box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
   background-color: #fff;
 }
 .nav-bar .nav-item {
@@ -41,10 +40,8 @@ page {
       left: 50%;
       bottom: 0;
       -webkit-transform: translateX(-50%);
-          -ms-transform: translateX(-50%);
               transform: translateX(-50%);
       -webkit-transition: .3s;
-      -o-transition: .3s;
       transition: .3s;
 }
 .nav-bar .current {

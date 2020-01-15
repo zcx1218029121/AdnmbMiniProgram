@@ -4,11 +4,12 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": false
+		"urlCheck": false,
+		"minified": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.7.0",
-	"appid": "touristappid",
+	"libVersion": "2.9.2",
+	"appid": "wx5872b6084a2e502c",
 	"projectname": "AdnmbMiniProgram",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},

@@ -1,0 +1,6 @@
+{
+  "defaultTitle": "详情",
+  "usingComponents": {
+    "mix-loading": "/components/mix-loading/mix-loading"
+  }
+}

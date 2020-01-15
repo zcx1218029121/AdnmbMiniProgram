@@ -1,12 +1,5 @@
 <template>
 	<view class="pager-content">
-		<!--
-		* 广告组件
-		* timedown 倒计时时间
-		* imageUrl 背景图
-		* url 跳转链接
-		*  -->
-	
 		
 		<!-- 顶部选项卡 -->
 		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
@@ -40,26 +33,25 @@
 							<view class="cu-item shadow">
 								<view class="cu-list menu-avatar">
 									<view class="cu-item">
-										<view class="cu-avatar lg round bg-red"> A</view>
+										<view :class="'cu-avatar lg round bg-'+item.bg"> {{item.icon}}</view>
 										
 										<view class="content flex-sub">
-											<view>ATM</view>
-											<view class="text-gray text-sm flex justify-between">
-												2019年12月3日
+											<view>{{item.userid}}</view>
+											<view class="text-gray text-sm flex justify-between" v-html="item.now">
+						
 											</view>
 										</view>
 									</view>
 								</view>
-								<view class="text-content">
-									折磨生出苦难，苦难又会加剧折磨，凡间这无穷的循环，将有我来终结！
+								<view class="text-content"style=" white-space: pre-wrap;">
+									{{item.content}}
 								</view>
 								<view class="grid flex-sub padding-lr" :class="isCard?'col-3 grid-square':'col-1'">
-									<view class="bg-img" :class="isCard?'':'only-img'" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"
-									 v-for="(item,index) in isCard?9:1" :key="index">
+									<view class="bg-img" :class="isCard?'':'only-img'" style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);">
 									</view>
 								</view>
 								<view class="text-gray text-sm text-right padding">
-									<text class="cuIcon-messagefill margin-lr-xs"></text> 30
+									<text class="cuIcon-messagefill margin-lr-xs"></text> {{item.replyCount}}
 								</view>
 						
 								
@@ -121,17 +113,13 @@
 					time: '2019-04-26 21:21'
 				}
 				return `/pages/details/details?data=${JSON.stringify(data)}`;
-			} 
+			},
 		},
 		async onLoad() {
 			// 获取屏幕宽度
 			windowWidth = uni.getSystemInfoSync().windowWidth;
 			this.loadTabbars();
-			this.$api.main('123').then((res)=>{
-					this.loading = false;
-					console.log('request success', res)
-					this.res = '请求结果 : ' + JSON.stringify(res);
-				})
+		
 				
 			
 		},
@@ -140,6 +128,8 @@
 		
 		},
 		methods: {
+			// 生成头像随机方法
+			
 			/**
 			 * 数据处理方法在vue和nvue中通用，可以直接用mixin混合
 			 * 这里直接写的
@@ -147,64 +137,65 @@
 			 */
 			//获取分类
 			loadTabbars(){
-				let tabList = json.tabList;
-				tabList.forEach(item=>{
-					item.newsList = [];
-					item.loadMoreStatus = 0;  //加载更多 0加载前，1加载中，2没有更多了
-					item.refreshing = 0;
-				})
-				this.tabBars = tabList;
-				this.loadNewsList('add');
+						this.loading = false;
+						let tabList = json.tabList
+						tabList.forEach(item=>{
+							item.newsList = [];
+							item.loadMoreStatus = 0;  //加载更多 0加载前，1加载中，2没有更多了
+							item.refreshing = 0;
+							item.index = 0
+						})
+						this.tabBars = tabList;
+						this.loadNewsList('add');
+					
 			},
 			//新闻列表
 			loadNewsList(type){
 				let tabItem = this.tabBars[this.tabCurrentIndex];
-				
-				//type add 加载更多 refresh下拉刷新
 				if(type === 'add'){
 					if(tabItem.loadMoreStatus === 2){
 						return;
 					}
 					tabItem.loadMoreStatus = 1;
 				}
-				// #ifdef APP-PLUS
 				else if(type === 'refresh'){
 					tabItem.refreshing = true;
+					tabItem.index = 0
 				}
-				// #endif
-				
+				   tabItem.index = tabItem.index+1
 				//setTimeout模拟异步请求数据
-				setTimeout(()=>{
-					let list = json.newsList;
-					list.sort((a,b)=>{
-						return Math.random() > .5 ? -1 : 1; //静态数据打乱顺序
+				    this.$api.main(tabItem.id,tabItem.index).then((res)=>{
+						let list = res.data;
+						if(type === 'refresh'){
+							tabItem.newsList = []; //刷新前清空数组
+						}
+						list.forEach(item=>{
+							item.icon = item.userid.substring(0,1)
+							item.bg = json.colorlist[parseInt(Math.random()*11 +1)]
+							tabItem.newsList.push(item);
+	
+						})
+						//下拉刷新 关闭刷新动画
+						if(type === 'refresh'){
+							this.$refs.mixPulldownRefresh && this.$refs.mixPulldownRefresh.endPulldownRefresh();
+							// #ifdef APP-PLUS
+							tabItem.refreshing = false;
+							// #endif
+							tabItem.loadMoreStatus = 0;
+						}
+						//上滑加载 处理状态
+				
+						tabItem.loadMoreStatus = tabItem.newsList.length <20
+						
 					})
-					if(type === 'refresh'){
-						tabItem.newsList = []; //刷新前清空数组
-					}
-					list.forEach(item=>{
-						item.id = parseInt(Math.random() * 10000);
-						tabItem.newsList.push(item);
-					})
-					//下拉刷新 关闭刷新动画
-					if(type === 'refresh'){
-						this.$refs.mixPulldownRefresh && this.$refs.mixPulldownRefresh.endPulldownRefresh();
-						// #ifdef APP-PLUS
-						tabItem.refreshing = false;
-						// #endif
-						tabItem.loadMoreStatus = 0;
-					}
-					//上滑加载 处理状态
-					if(type === 'add'){
-						tabItem.loadMoreStatus = tabItem.newsList.length > 40 ? 2: 0;
-					}
-				}, 600)
+					
+				
 			},
 			//新闻详情
 			navToDetails(item){
 				let data = {
 					id: item.id,
-					title: item.title,
+					title: item.content,
 					author: item.author,
 					time: item.time
 				}

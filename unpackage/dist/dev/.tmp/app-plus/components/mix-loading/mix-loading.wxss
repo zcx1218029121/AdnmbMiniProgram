@@ -2,15 +2,12 @@
 .mix-loading-content{
 	display:-webkit-box;
 	display:-webkit-flex;
-	display:-ms-flexbox;
 	display:flex;
 	-webkit-box-pack: center;
 	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
 	        justify-content: center;
 	-webkit-box-align: center;
 	-webkit-align-items: center;
-	    -ms-flex-align: center;
 	        align-items: center;
 	position: absolute;
 	left: 0;
@@ -22,15 +19,12 @@
 .mix-loading-wrapper{
 	display: -webkit-box;
 	display: -webkit-flex;
-	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-pack: center;
 	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
 	        justify-content: center;
 	-webkit-box-align: center;
 	-webkit-align-items: center;
-	    -ms-flex-align: center;
 	        align-items: center;
 	-webkit-animation: loading .5s ease-in infinite both alternate;
 	        animation: loading .5s ease-in infinite both alternate;
@@ -39,7 +33,6 @@
 	width: 80rpx;
 	height: 80rpx;
 	-webkit-transition: .3s;
-	-o-transition: .3s;
 	transition: .3s;
 }
 @-webkit-keyframes loading {

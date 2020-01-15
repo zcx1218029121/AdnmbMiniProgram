@@ -241,7 +241,7 @@ var promiseInterceptor = {
 
 
 var SYNC_API_RE =
-/^\$|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
+/^\$|restoreGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64/;
 
 var CONTEXT_API_RE = /^create|Manager$/;
 
@@ -255,7 +255,7 @@ function isSyncApi(name) {
 }
 
 function isCallbackApi(name) {
-  return CALLBACK_API_RE.test(name);
+  return CALLBACK_API_RE.test(name) && name !== 'onPush';
 }
 
 function handlePromise(promise) {
@@ -354,6 +354,7 @@ var interceptors = {
 
 
 var baseApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   upx2px: upx2px,
   interceptors: interceptors,
   addInterceptor: addInterceptor,
@@ -484,6 +485,7 @@ function wrapper(methodName, method) {
 var todoApis = Object.create(null);
 
 var TODOS = [
+'onTabBarMidButtonTap',
 'subscribePush',
 'unsubscribePush',
 'onPush',
@@ -539,6 +541,7 @@ function getProvider(_ref2)
 }
 
 var extraApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   getProvider: getProvider });
 
 
@@ -574,6 +577,7 @@ function $emit() {
 }
 
 var eventApi = /*#__PURE__*/Object.freeze({
+  __proto__: null,
   $on: $on,
   $off: $off,
   $once: $once,
@@ -582,8 +586,8 @@ var eventApi = /*#__PURE__*/Object.freeze({
 
 
 
-var api = /*#__PURE__*/Object.freeze({});
-
+var api = /*#__PURE__*/Object.freeze({
+  __proto__: null });
 
 
 var MPPage = Page;
@@ -1084,6 +1088,18 @@ function handleEvent(event) {var _this = this;
           {// mp-weixin,mp-toutiao 抽象节点模拟 scoped slots
             handlerCtx = handlerCtx.$parent.$parent;
           }
+          if (methodName === '$emit') {
+            handlerCtx.$emit.apply(handlerCtx,
+            processEventArgs(
+            _this.$vm,
+            event,
+            eventArray[1],
+            eventArray[2],
+            isCustom,
+            methodName));
+
+            return;
+          }
           var handler = handlerCtx[methodName];
           if (!isFn(handler)) {
             throw new Error(" _vm.".concat(methodName, " is not a function"));
@@ -1176,6 +1192,8 @@ function parseBaseApp(vm, _ref3)
 
 
       this.$vm.$scope = this;
+      // vm 上也挂载 globalData
+      this.$vm.globalData = this.globalData;
 
       this.$vm._isMounted = true;
       this.$vm.__call_hook('mounted', args);
@@ -1186,6 +1204,13 @@ function parseBaseApp(vm, _ref3)
 
   // 兼容旧版本 globalData
   appOptions.globalData = vm.$options.globalData || {};
+  // 将 methods 中的方法挂在 getApp() 中
+  var methods = vm.$options.methods;
+  if (methods) {
+    Object.keys(methods).forEach(function (name) {
+      appOptions[name] = methods[name];
+    });
+  }
 
   initHooks(appOptions, hooks);
 
@@ -1196,14 +1221,17 @@ var mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
 
 function findVmByVueId(vm, vuePid) {
   var $children = vm.$children;
-  // 优先查找直属
-  var parentVm = $children.find(function (childVm) {return childVm.$scope._$vueId === vuePid;});
-  if (parentVm) {
-    return parentVm;
+  // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+  for (var i = $children.length - 1; i >= 0; i--) {
+    var childVm = $children[i];
+    if (childVm.$scope._$vueId === vuePid) {
+      return childVm;
+    }
   }
   // 反向递归查找
-  for (var i = $children.length - 1; i >= 0; i--) {
-    parentVm = findVmByVueId($children[i], vuePid);
+  var parentVm;
+  for (var _i = $children.length - 1; _i >= 0; _i--) {
+    parentVm = findVmByVueId($children[_i], vuePid);
     if (parentVm) {
       return parentVm;
     }
@@ -1282,11 +1310,20 @@ function parseBaseComponent(vueComponentOptions)
 {var _ref5 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},isPage = _ref5.isPage,initRelation = _ref5.initRelation;var _initVueComponent =
   initVueComponent(_vue.default, vueComponentOptions),_initVueComponent2 = _slicedToArray(_initVueComponent, 2),VueComponent = _initVueComponent2[0],vueOptions = _initVueComponent2[1];
 
-  var componentOptions = {
-    options: {
-      multipleSlots: true,
-      addGlobalClass: true },
+  var options = {
+    multipleSlots: true,
+    addGlobalClass: true };
 
+
+  {
+    // 微信 multipleSlots 部分情况有 bug，导致内容顺序错乱 如 u-list，提供覆盖选项
+    if (vueOptions['mp-weixin'] && vueOptions['mp-weixin']['options']) {
+      Object.assign(options, vueOptions['mp-weixin']['options']);
+    }
+  }
+
+  var componentOptions = {
+    options: options,
     data: initData(vueOptions, _vue.default.prototype),
     behaviors: initBehaviors(vueOptions, initBehavior),
     properties: initProperties(vueOptions.props, false, vueOptions.__file),
@@ -1506,7 +1543,7 @@ uni$1;exports.default = _default;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global) {/*!
- * Vue.js v2.6.10
+ * Vue.js v2.6.11
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -2205,7 +2242,13 @@ var uid = 0;
  * directives subscribing to it.
  */
 var Dep = function Dep () {
-  this.id = uid++;
+  // fixed by xxxxxx (nvue vuex)
+  /* eslint-disable no-undef */
+  if(typeof SharedObject !== 'undefined'){
+    this.id = SharedObject.uid++;
+  } else {
+    this.id = uid++;
+  }
   this.subs = [];
 };
 
@@ -3469,7 +3512,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   };
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Techinically it leverages the (macro) task queue,
+  // Technically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = function () {
     setImmediate(flushCallbacks);
@@ -3535,7 +3578,7 @@ if (true) {
     warn(
       "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-      'prevent conflicts with Vue internals' +
+      'prevent conflicts with Vue internals. ' +
       'See: https://vuejs.org/v2/api/#data',
       target
     );
@@ -3735,17 +3778,48 @@ function updateListeners (
 
 /*  */
 
+// fixed by xxxxxx (mp properties)
+function extractPropertiesFromVNodeData(data, Ctor, res, context) {
+  var propOptions = Ctor.options.mpOptions && Ctor.options.mpOptions.properties;
+  if (isUndef(propOptions)) {
+    return res
+  }
+  var externalClasses = Ctor.options.mpOptions.externalClasses || [];
+  var attrs = data.attrs;
+  var props = data.props;
+  if (isDef(attrs) || isDef(props)) {
+    for (var key in propOptions) {
+      var altKey = hyphenate(key);
+      var result = checkProp(res, props, key, altKey, true) ||
+          checkProp(res, attrs, key, altKey, false);
+      // externalClass
+      if (
+        result &&
+        res[key] &&
+        externalClasses.indexOf(altKey) !== -1 &&
+        context[camelize(res[key])]
+      ) {
+        // 赋值 externalClass 真正的值(模板里 externalClass 的值可能是字符串)
+        res[key] = context[camelize(res[key])];
+      }
+    }
+  }
+  return res
+}
+
 function extractPropsFromVNodeData (
   data,
   Ctor,
-  tag
+  tag,
+  context// fixed by xxxxxx
 ) {
   // we are only extracting raw values here.
   // validation and default values are handled in the child
   // component itself.
   var propOptions = Ctor.options.props;
   if (isUndef(propOptions)) {
-    return
+    // fixed by xxxxxx
+    return extractPropertiesFromVNodeData(data, Ctor, {}, context)
   }
   var res = {};
   var attrs = data.attrs;
@@ -3773,7 +3847,8 @@ function extractPropsFromVNodeData (
       checkProp(res, attrs, key, altKey, false);
     }
   }
-  return res
+  // fixed by xxxxxx
+  return extractPropertiesFromVNodeData(data, Ctor, res, context)
 }
 
 function checkProp (
@@ -4106,12 +4181,12 @@ function renderList (
   if (Array.isArray(val) || typeof val === 'string') {
     ret = new Array(val.length);
     for (i = 0, l = val.length; i < l; i++) {
-      ret[i] = render(val[i], i);
+      ret[i] = render(val[i], i, i, i); // fixed by xxxxxx
     }
   } else if (typeof val === 'number') {
     ret = new Array(val);
     for (i = 0; i < val; i++) {
-      ret[i] = render(i + 1, i);
+      ret[i] = render(i + 1, i, i, i); // fixed by xxxxxx
     }
   } else if (isObject(val)) {
     if (hasSymbol && val[Symbol.iterator]) {
@@ -4119,7 +4194,7 @@ function renderList (
       var iterator = val[Symbol.iterator]();
       var result = iterator.next();
       while (!result.done) {
-        ret.push(render(result.value, ret.length));
+        ret.push(render(result.value, ret.length, i++, i)); // fixed by xxxxxx
         result = iterator.next();
       }
     } else {
@@ -4127,7 +4202,7 @@ function renderList (
       ret = new Array(keys.length);
       for (i = 0, l = keys.length; i < l; i++) {
         key = keys[i];
-        ret[i] = render(val[key], key, i);
+        ret[i] = render(val[key], key, i, i); // fixed by xxxxxx
       }
     }
   }
@@ -4162,7 +4237,8 @@ function renderSlot (
       }
       props = extend(extend({}, bindObject), props);
     }
-    nodes = scopedSlotFn(props) || fallback;
+    // fixed by xxxxxx app-plus scopedSlot
+    nodes = scopedSlotFn(props, this, props._i) || fallback;
   } else {
     nodes = this.$slots[name] || fallback;
   }
@@ -4390,7 +4466,7 @@ function bindDynamicKeys (baseObj, values) {
     if (typeof key === 'string' && key) {
       baseObj[values[i]] = values[i + 1];
     } else if ( true && key !== '' && key !== null) {
-      // null is a speical value for explicitly removing a binding
+      // null is a special value for explicitly removing a binding
       warn(
         ("Invalid value for dynamic directive argument (expected string or null): " + key),
         this
@@ -4614,6 +4690,8 @@ var componentVNodeHooks = {
     var context = vnode.context;
     var componentInstance = vnode.componentInstance;
     if (!componentInstance._isMounted) {
+      callHook(componentInstance, 'onServiceCreated');
+      callHook(componentInstance, 'onServiceAttached');
       componentInstance._isMounted = true;
       callHook(componentInstance, 'mounted');
     }
@@ -4703,7 +4781,7 @@ function createComponent (
   }
 
   // extract props
-  var propsData = extractPropsFromVNodeData(data, Ctor, tag);
+  var propsData = extractPropsFromVNodeData(data, Ctor, tag, context); // fixed by xxxxxx
 
   // functional component
   if (isTrue(Ctor.options.functional)) {
@@ -4886,6 +4964,12 @@ function _createElement (
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
+      if ( true && isDef(data) && isDef(data.nativeOn)) {
+        warn(
+          ("The .native modifier for v-on is only valid on components but it was used on <" + tag + ">."),
+          context
+        );
+      }
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
@@ -5011,7 +5095,7 @@ function renderMixin (Vue) {
     // render self
     var vnode;
     try {
-      // There's no need to maintain a stack becaues all render fns are called
+      // There's no need to maintain a stack because all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm;
@@ -5546,7 +5630,10 @@ function updateChildComponent (
     // keep a copy of raw propsData
     vm.$options.propsData = propsData;
   }
-
+  
+  // fixed by xxxxxx update properties(mp runtime)
+  vm._$updateProperties && vm._$updateProperties(vm);
+  
   // update listeners
   listeners = listeners || emptyObject;
   var oldListeners = vm.$options._parentListeners;
@@ -6865,7 +6952,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.10';
+Vue.version = '2.6.11';
 
 /**
  * https://raw.githubusercontent.com/Tencent/westore/master/packages/westore/utils/diff.js
@@ -7255,7 +7342,13 @@ function getTarget(obj, path) {
 function internalMixin(Vue) {
 
   Vue.config.errorHandler = function(err) {
-    console.error(err);
+    /* eslint-disable no-undef */
+    var app = getApp();
+    if (app && app.onError) {
+      app.onError(err);
+    } else {
+      console.error(err);
+    }
   };
 
   var oldEmit = Vue.prototype.$emit;
@@ -7275,9 +7368,21 @@ function internalMixin(Vue) {
 
   MP_METHODS.forEach(function (method) {
     Vue.prototype[method] = function(args) {
-      if (this.$scope) {
+      if (this.$scope && this.$scope[method]) {
         return this.$scope[method](args)
       }
+      // mp-alipay
+      if (typeof my === 'undefined') {
+        return
+      }
+      if (method === 'createSelectorQuery') {
+        /* eslint-disable no-undef */
+        return my.createSelectorQuery(args)
+      } else if (method === 'createIntersectionObserver') {
+        /* eslint-disable no-undef */
+        return my.createIntersectionObserver(args)
+      }
+      // TODO mp-alipay 暂不支持 selectAllComponents,selectComponent
     };
   });
 
@@ -7298,7 +7403,7 @@ function internalMixin(Vue) {
       }
     }
     if (vm._hasHookEvent) {
-      vm.$emit('hook:' + hook);
+      vm.$emit('hook:' + hook, args);
     }
     popTarget();
     return ret
@@ -7593,7 +7698,10 @@ var getPlatformName = function getPlatformName() {
 var getPackName = function getPackName() {
   var packName = '';
   if (getPlatformName() === 'wx' || getPlatformName() === 'qq') {
-    packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    // 兼容微信小程序低版本基础库
+    if (uni.canIUse('getAccountInfoSync')) {
+      packName = uni.getAccountInfoSync().miniProgram.appId || '';
+    }
   }
   return packName;
 };
@@ -8205,7 +8313,7 @@ Stat = /*#__PURE__*/function (_Util) {_inherits(Stat, _Util);_createClass(Stat, 
     _this6 = _possibleConstructorReturn(this, _getPrototypeOf(Stat).call(this));
     _this6.instance = null;
     // 注册拦截器
-    if (typeof uni.addInterceptor === 'function') {
+    if (typeof uni.addInterceptor === 'function' && "development" !== 'development') {
       _this6.addInterceptorInit();
       _this6.interceptLogin();
       _this6.interceptShare(true);
@@ -8389,7 +8497,7 @@ main();
 /*! exports provided: _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _shasum, _spec, _where, author, bugs, bundleDependencies, deprecated, description, devDependencies, files, gitHead, homepage, license, main, name, repository, scripts, version, default */
 /***/ (function(module) {
 
-module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.0.0-23320190923002","_inBundle":false,"_integrity":"sha512-MnftsvgOac3q1FCOBPzivbFn8GNQFo7D2DY325HeEZyFCWgx5GEwHpGYjT1PQU6v7DaDn0ruxa3ObdpUIYbmZw==","_location":"/@dcloudio/uni-stat","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"@dcloudio/uni-stat@next","name":"@dcloudio/uni-stat","escapedName":"@dcloudio%2funi-stat","scope":"@dcloudio","rawSpec":"next","saveSpec":null,"fetchSpec":"next"},"_requiredBy":["#USER","/","/@dcloudio/vue-cli-plugin-uni"],"_resolved":"https://registry.npmjs.org/@dcloudio/uni-stat/-/uni-stat-2.0.0-23320190923002.tgz","_shasum":"0c400c140ca0b3c05f52d25f11583cf05a0c4e9a","_spec":"@dcloudio/uni-stat@next","_where":"/Users/fxy/Documents/DCloud/HbuilderX-plugins/release/uniapp-cli","author":"","bugs":{"url":"https://github.com/dcloudio/uni-app/issues"},"bundleDependencies":false,"deprecated":false,"description":"","devDependencies":{"@babel/core":"^7.5.5","@babel/preset-env":"^7.5.5","eslint":"^6.1.0","rollup":"^1.19.3","rollup-plugin-babel":"^4.3.3","rollup-plugin-clear":"^2.0.7","rollup-plugin-commonjs":"^10.0.2","rollup-plugin-copy":"^3.1.0","rollup-plugin-eslint":"^7.0.0","rollup-plugin-json":"^4.0.0","rollup-plugin-node-resolve":"^5.2.0","rollup-plugin-replace":"^2.2.0","rollup-plugin-uglify":"^6.0.2"},"files":["dist","package.json","LICENSE"],"gitHead":"fed4c73fb9142a1b277dd79313939cad90693d3e","homepage":"https://github.com/dcloudio/uni-app#readme","license":"Apache-2.0","main":"dist/index.js","name":"@dcloudio/uni-stat","repository":{"type":"git","url":"git+https://github.com/dcloudio/uni-app.git","directory":"packages/uni-stat"},"scripts":{"build":"NODE_ENV=production rollup -c rollup.config.js","dev":"NODE_ENV=development rollup -w -c rollup.config.js"},"version":"2.0.0-23320190923002"};
+module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2.0.0-alpha-25120200103005","_inBundle":false,"_integrity":"sha512-nYoIrRV2e5o/vzr6foSdWi3Rl2p0GuO+LPY3JctyY6uTKgPnuH99d7aL/QQdJ1SacQjBWO+QGK1qankN7oyrWw==","_location":"/@dcloudio/uni-stat","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"@dcloudio/uni-stat@alpha","name":"@dcloudio/uni-stat","escapedName":"@dcloudio%2funi-stat","scope":"@dcloudio","rawSpec":"alpha","saveSpec":null,"fetchSpec":"alpha"},"_requiredBy":["#USER","/","/@dcloudio/vue-cli-plugin-uni"],"_resolved":"https://registry.npmjs.org/@dcloudio/uni-stat/-/uni-stat-2.0.0-alpha-25120200103005.tgz","_shasum":"a77a63481f36474f3e86686868051219d1bb12df","_spec":"@dcloudio/uni-stat@alpha","_where":"/Users/guoshengqiang/Documents/dcloud-plugins/alpha/uniapp-cli","author":"","bugs":{"url":"https://github.com/dcloudio/uni-app/issues"},"bundleDependencies":false,"deprecated":false,"description":"","devDependencies":{"@babel/core":"^7.5.5","@babel/preset-env":"^7.5.5","eslint":"^6.1.0","rollup":"^1.19.3","rollup-plugin-babel":"^4.3.3","rollup-plugin-clear":"^2.0.7","rollup-plugin-commonjs":"^10.0.2","rollup-plugin-copy":"^3.1.0","rollup-plugin-eslint":"^7.0.0","rollup-plugin-json":"^4.0.0","rollup-plugin-node-resolve":"^5.2.0","rollup-plugin-replace":"^2.2.0","rollup-plugin-uglify":"^6.0.2"},"files":["dist","package.json","LICENSE"],"gitHead":"6be187a3dfe15f95dd6146d9fec08e1f81100987","homepage":"https://github.com/dcloudio/uni-app#readme","license":"Apache-2.0","main":"dist/index.js","name":"@dcloudio/uni-stat","repository":{"type":"git","url":"git+https://github.com/dcloudio/uni-app.git","directory":"packages/uni-stat"},"scripts":{"build":"NODE_ENV=production rollup -c rollup.config.js","dev":"NODE_ENV=development rollup -w -c rollup.config.js"},"version":"2.0.0-alpha-25120200103005"};
 
 /***/ }),
 /* 7 */
@@ -8400,7 +8508,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "usingComponents": {} }, "pages/component/component": { "navigationBarTitleText": "组件使用示例" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/nvue/nvue": { "navigationBarTitleText": "串" }, "pages/me/me": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "新闻模版", "navigationBarBackgroundColor": "#ec706b", "backgroundColor": "#f8f8f8" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页", "usingComponents": { "mix-pulldown-refresh": "/components/mix-pulldown-refresh/mix-pulldown-refresh", "mix-load-more": "/components/mix-load-more/mix-load-more" }, "usingAutoImportComponents": {} }, "pages/component/component": { "navigationBarTitleText": "组件使用示例", "usingComponents": { "mix-pulldown-refresh": "/components/mix-pulldown-refresh/mix-pulldown-refresh", "mix-load-more": "/components/mix-load-more/mix-load-more" }, "usingAutoImportComponents": {} }, "pages/details/details": { "navigationBarTitleText": "详情", "usingComponents": { "mix-loading": "/components/mix-loading/mix-loading" }, "usingAutoImportComponents": {} }, "pages/nvue/nvue": { "navigationBarTitleText": "串", "usingComponents": {}, "usingAutoImportComponents": {} } }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "新闻模版", "backgroundColor": "#f8f8f8" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
@@ -8420,9 +8528,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 12 */,
 /* 13 */,
 /* 14 */
-/*!********************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \********************************************************************/
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -8443,12 +8551,26 @@ function normalizeComponent (
   injectStyles,
   scopeId,
   moduleIdentifier, /* server only */
-  shadowMode /* vue-cli only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
 ) {
   // Vue.extend constructor export interop
   var options = typeof scriptExports === 'function'
     ? scriptExports.options
     : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    options.components = Object.assign(components, options.components || {})
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
 
   // render functions
   if (render) {
@@ -8533,13 +8655,13 @@ function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.main = exports.banner = exports.test = void 0;var _interface = _interopRequireDefault(__webpack_require__(/*! ./interface */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.getClass = exports.main = exports.banner = exports.test = void 0;var _interface = _interopRequireDefault(__webpack_require__(/*! ./interface */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 /**
-                                                                                                                                                                                                                                                                                                                  * 将业务所有接口统一起来便于维护
-                                                                                                                                                                                                                                                                                                                  * 如果项目很大可以将 url 独立成文件，接口分成不同的模块
-                                                                                                                                                                                                                                                                                                                  * 
-                                                                                                                                                                                                                                                                                                                  */
+                                                                                                                                                                                                                                                                                                                                     * 将业务所有接口统一起来便于维护
+                                                                                                                                                                                                                                                                                                                                     * 如果项目很大可以将 url 独立成文件，接口分成不同的模块
+                                                                                                                                                                                                                                                                                                                                     * 
+                                                                                                                                                                                                                                                                                                                                     */
 
 // 单独导出(测试接口) import {test} from '@/common/vmeitime-http/'
 var test = function test(data) {
@@ -8574,20 +8696,27 @@ exports.test = test;var banner = function banner(data) {
   });
 };exports.banner = banner;
 
-var main = function main(data) {
+var main = function main(id, index) {
   return _interface.default.request({
-    url: 'Api/showf?id=4s&page=1',
-    method: 'GET',
-    data: data });
+    url: 'Api/showf?id=' + id + 's&page=' + index,
+    method: 'GET' });
+
+};exports.main = main;
+var getClass = function getClass() {
+  return _interface.default.request({
+    baseUrl: 'http://cover.acfunwiki.org/',
+    url: 'luwei.json?appid=e31c86032f0d607c&__t=1577944306659',
+    method: 'GET' });
 
 };
 
 
 // 默认全部导出  import api from '@/common/vmeitime-http/'
-exports.main = main;var _default = {
+exports.getClass = getClass;var _default = {
   test: test,
   banner: banner,
-  main: main };exports.default = _default;
+  main: main,
+  getClass: getClass };exports.default = _default;
 
 /***/ }),
 /* 16 */
@@ -9594,33 +9723,470 @@ if (hadRuntime) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var tabList = [{
-  name: '时间线',
-  id: '1' },
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; // 因为a岛的 分类接口不是 https协议 如果需要板块只能 写死了 QAQ
+
+var colorlist = ['red', 'orange', 'yellow', 'olive', 'cyan', 'blue', 'purple', 'mauve', 'pink', 'brown'];
+
+var tabList = [
 {
-  name: '欢乐恶搞',
-  id: '2' },
+  "fgroup": "4",
+  "id": "4",
+  "name": "综合版1",
+  "showName": "",
+  "rule": "发言前请点击右上角版规，并通过值班室和城墙版了解违规范围\n 本岛普遍反感情感、晒妹、嘴臭，禁止涉政涉黄犯罪等内容" },
+
 {
-  name: '综合1',
-  id: '3' },
+  "fgroup": "4",
+  "id": "120",
+  "name": "围炉",
+  "showName": "综合2(围炉)" },
+
 {
-  name: '欢乐恶搞',
-  id: '4' },
+  "fgroup": "4",
+  "id": "20",
+  "name": "欢乐恶搞",
+  "showName": "",
+  "rule": "前提是欢乐，其次才可以恶搞\n 这里不是法外之地，请遵守总版规" },
+
 {
-  name: '欢乐恶搞',
-  id: '5' },
+  "fgroup": "4",
+  "id": "121",
+  "name": "速报2",
+  "showName": "速报2",
+  "rule": "时事/热点/民生等社会性话题请只在本版进行讨论\n 消息需完整，国内消息需来源自官媒或可信媒体（严禁自媒体）\n 严禁键政或转进敏感话题" },
+
 {
-  name: '欢乐恶搞',
-  id: '6' },
+  "fgroup": "4",
+  "id": "11",
+  "name": "推理",
+  "showName": "推理(脑洞)" },
+
 {
-  name: '欢乐恶搞',
-  id: '7' },
+  "fgroup": "4",
+  "id": "111",
+  "name": "跑团",
+  "showName": "跑团",
+  "rule": "请勿发表违法内容，完结或弃坑团请在版规集中串中求助本版红名" },
+
 {
-  name: '欢乐恶搞',
-  id: '8' },
+  "fgroup": "4",
+  "id": "30",
+  "name": "技术宅",
+  "showName": "技术(IT)",
+  "rule": "纯软件技术讨论，硬件讨论请至数码版" },
+
 {
-  name: '欢乐恶搞',
-  id: '9' }];
+  "fgroup": "4",
+  "id": "32",
+  "name": "料理",
+  "showName": "料理" },
+
+{
+  "fgroup": "4",
+  "id": "40",
+  "name": "猫版",
+  "showName": "喵版" },
+
+{
+  "fgroup": "4",
+  "id": "35",
+  "name": "音乐",
+  "showName": "" },
+
+{
+  "fgroup": "4",
+  "id": "56",
+  "name": "考试",
+  "showName": "学业(校园)",
+  "rule": "考试版，可以备考互助、日西成绩" },
+
+{
+  "fgroup": "4",
+  "id": "110",
+  "name": "社畜",
+  "showName": "社畜",
+  "rule": "可以讨论工作、投资、车房、养老相关，禁止晒妹晒配偶\n 育儿相关请至育儿版\n 投资有风险，请谨慎考虑张贴真实信息的后果，本站不对个人信息泄露引起的后果负责" },
+
+{
+  "fgroup": "4",
+  "id": "15",
+  "name": "科学",
+  "showName": "科学(理学)" },
+
+{
+  "fgroup": "4",
+  "id": "103",
+  "name": "文学",
+  "showName": "文学(推书)" },
+
+{
+  "fgroup": "4",
+  "id": "17",
+  "name": "二次创作",
+  "showName": "绘画涂鸦(二创)",
+  "rule": "深海巨触与萌新沙包的乐园，欢迎贴原创或二创绘图或毁图，严禁擦边涉黄内容" },
+
+{
+  "fgroup": "4",
+  "id": "98",
+  "name": "姐妹1",
+  "showName": "姐妹(淑女)",
+  "rule": "这里默认使用女性视角发言，本版普遍反感情感和刷存在感等内容" },
+
+{
+  "fgroup": "4",
+  "id": "75",
+  "name": "数码",
+  "showName": "",
+  "rule": "3C数码硬件相关讨论，水军自重，软件请到技术版" },
+
+{
+  "fgroup": "4",
+  "id": "97",
+  "name": "女装",
+  "showName": "女装(时尚)",
+  "rule": "女装只有0次和无数次！\n 请把握尺度，禁止发表擦边内容" },
+
+{
+  "fgroup": "4",
+  "id": "89",
+  "name": "日记",
+  "showName": "日记(树洞)",
+  "rule": "这里发串不会显示在时间线\n 原则上不鼓励骚扰他人，Po主可点举报要求删除自己串内的回复\n 禁止发表违法违规内容" },
+
+{
+  "fgroup": "4",
+  "id": "96",
+  "name": "圈内",
+  "showName": "",
+  "rule": "一切岛务都在集中串中讨论，有事找红名前请先自助查询集中串FAQ\n 这里不欢迎骑脸的云红名，不满现状的最好办法是答题充值，脚踏实地为岛民服务" },
+
+{
+  "fgroup": "4",
+  "id": "81",
+  "name": "都市怪谈",
+  "showName": "" },
+
+{
+  "fgroup": "4",
+  "id": "106",
+  "name": "买买买",
+  "showName": "买买买",
+  "rule": "禁止擅自发表商业广告、推广链接，在本站打广告请联系help@adnmb.com\n 友情提示：网络交易有风险，二手交易信息请至集中串发布，单开删除" },
+
+{
+  "fgroup": "1",
+  "id": "14",
+  "name": "动画",
+  "showName": "",
+  "rule": "发布新串前请善用搜索，如有相关集中串，请勿单独另发" },
+
+{
+  "fgroup": "1",
+  "id": "12",
+  "name": "漫画",
+  "showName": "",
+  "rule": "发图、求问或指路黄漫等同于发车会被封禁，请勿发表擦边内容" },
+
+{
+  "fgroup": "1",
+  "id": "90",
+  "name": "美漫",
+  "showName": "美漫(小马)" },
+
+{
+  "fgroup": "1",
+  "id": "99",
+  "name": "国漫",
+  "showName": "" },
+
+{
+  "fgroup": "1",
+  "id": "19",
+  "name": "小说",
+  "showName": "小说(连载)" },
+
+{
+  "fgroup": "1",
+  "id": "87",
+  "name": "轻小说",
+  "showName": "" },
+
+{
+  "fgroup": "1",
+  "id": "64",
+  "name": "GALGAME",
+  "showName": "" },
+
+{
+  "fgroup": "1",
+  "id": "5",
+  "name": "东方Project",
+  "showName": "" },
+
+{
+  "fgroup": "1",
+  "id": "93",
+  "name": "舰娘",
+  "showName": "" },
+
+{
+  "fgroup": "1",
+  "id": "101",
+  "name": "虚拟偶像",
+  "showName": "虚拟偶像(LL)" },
+
+{
+  "fgroup": "1",
+  "id": "6",
+  "name": "VOCALOID",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "2",
+  "name": "游戏",
+  "showName": "游戏综合版",
+  "rule": "发布新串前请善用搜索，如有相关集中串，请勿单独另发" },
+
+{
+  "fgroup": "3",
+  "id": "72",
+  "name": "DNF",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "124",
+  "name": "SE",
+  "showName": "Square-Enix" },
+
+{
+  "fgroup": "3",
+  "id": "3",
+  "name": "手游",
+  "showName": "手游" },
+
+{
+  "fgroup": "3",
+  "id": "107",
+  "name": "Steam",
+  "showName": "Steam" },
+
+{
+  "fgroup": "3",
+  "id": "24",
+  "name": "索尼",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "22",
+  "name": "LOL",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "70",
+  "name": "DOTA",
+  "showName": "DOTA+刀牌" },
+
+{
+  "fgroup": "3",
+  "id": "38",
+  "name": "口袋妖怪",
+  "showName": "精灵宝可梦" },
+
+{
+  "fgroup": "3",
+  "id": "86",
+  "name": "战争雷霆",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "51",
+  "name": "WOT",
+  "showName": "坦克战机战舰世界" },
+
+{
+  "fgroup": "3",
+  "id": "10",
+  "name": "Minecraft",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "28",
+  "name": "怪物猎人",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "108",
+  "name": "3A游戏",
+  "showName": "3A游戏" },
+
+{
+  "fgroup": "3",
+  "id": "119",
+  "name": "彩虹六号",
+  "showName": "彩虹六号" },
+
+{
+  "fgroup": "3",
+  "id": "23",
+  "name": "暴雪游戏",
+  "showName": "暴雪游戏" },
+
+{
+  "fgroup": "3",
+  "id": "45",
+  "name": "卡牌桌游",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "34",
+  "name": "MUG",
+  "showName": "音乐游戏" },
+
+{
+  "fgroup": "3",
+  "id": "29",
+  "name": "AC大逃杀",
+  "showName": "" },
+
+{
+  "fgroup": "3",
+  "id": "25",
+  "name": "任天堂",
+  "showName": "" },
+
+{
+  "fgroup": "8",
+  "id": "16",
+  "name": "AKB",
+  "showName": "日本偶像(AKB)" },
+
+{
+  "fgroup": "8",
+  "id": "100",
+  "name": "SNH48",
+  "showName": "中国偶像(SNH)" },
+
+{
+  "fgroup": "8",
+  "id": "13",
+  "name": "COSPLAY",
+  "showName": "眼科(Cosplay)" },
+
+{
+  "fgroup": "8",
+  "id": "55",
+  "name": "声优",
+  "showName": "" },
+
+{
+  "fgroup": "8",
+  "id": "39",
+  "name": "模型",
+  "showName": "模型(手办)" },
+
+{
+  "fgroup": "5",
+  "id": "31",
+  "name": "影视",
+  "showName": "电影/电视" },
+
+{
+  "fgroup": "5",
+  "id": "54",
+  "name": "摄影",
+  "showName": "" },
+
+{
+  "fgroup": "5",
+  "id": "37",
+  "name": "军武",
+  "showName": "",
+  "rule": "请勿涉政转进，违者直接碎光" },
+
+{
+  "fgroup": "5",
+  "id": "33",
+  "name": "体育",
+  "showName": "体育" },
+
+{
+  "fgroup": "6",
+  "id": "18",
+  "name": "值班室",
+  "showName": "",
+  "rule": "举报处理时间通常为半天左右，SAGE表示已阅，欢迎充值红名，为维持A岛的和谐讨论环境贡献一份力量" },
+
+{
+  "fgroup": "6",
+  "id": "112",
+  "name": "城墙",
+  "showName": "",
+  "rule": "看看版规？你确定仍要在这里发言吗？" },
+
+{
+  "fgroup": "6",
+  "id": "117",
+  "name": "技术支持",
+  "showName": "",
+  "rule": "请描述清楚现象（发生了什么），复现方法（怎么做才会发生），网络环境（地理位置，运营商），账号信息（如有必要）\n 打不开岛时可以使用绿岛app的网络诊断功能发送到admin@adnmb.com" },
+
+{
+  "fgroup": "1",
+  "id": "114",
+  "name": "询问3",
+  "showName": "询问3",
+  "rule": "云搜索版，伸手前请百度，禁止任何违法违规内容" },
+
+{
+  "fgroup": "1",
+  "id": "118",
+  "name": "宠物",
+  "showName": "宠物",
+  "rule": "可以发表除猫以外的各种宠物（包括狗）相关内容，撸猫请至猫版" },
+
+{
+  "fgroup": "1",
+  "id": "115",
+  "name": "摄影2",
+  "showName": "摄影2",
+  "rule": "禁止发盗摄，发表作品时请尽量附上EXIF信息，写明光圈快门ISO机身镜头型号等方便学习交流" },
+
+{
+  "fgroup": "8",
+  "id": "116",
+  "name": "主播",
+  "showName": "主播",
+  "rule": "可以讨论包括但不限于国内外虚拟主播、真人主播的直播、录播和主播本人相关话题\n 禁止人身攻击、踩一捧一，不支持挖中之人/前世以及gachi串中anti行为" },
+
+{
+  "fgroup": "4",
+  "id": "113",
+  "name": "育儿",
+  "showName": "育儿",
+  "rule": "可以晒娃，不可以晒妹" },
+
+{
+  "fgroup": "1",
+  "id": "120",
+  "name": "围炉",
+  "showName": "",
+  "rule": "尊重他人才能获得温暖，本版禁止一切广义上的现充、骑脸和暴躁行为" },
+
+{
+  "fgroup": "1",
+  "id": "9",
+  "name": "特摄",
+  "showName": "特摄" }];
+
 
 var newsList = [{
   id: 1,
@@ -9727,7 +10293,8 @@ var evaList = [{
 {
   tabList: tabList,
   newsList: newsList,
-  evaList: evaList };exports.default = _default;
+  evaList: evaList,
+  colorlist: colorlist };exports.default = _default;
 
 /***/ })
 ]]);

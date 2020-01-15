@@ -42,19 +42,11 @@
             	}
             }
         }
-        ,{
-            "path" : "pages/index/index",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/me/me",
-            "style" : {}
-        }
+        
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "新闻模版",
-		"navigationBarBackgroundColor": "#ec706b",
 		"backgroundColor": "#f8f8f8"
 	},
 	"condition" : { //模式配置，仅开发期间生效

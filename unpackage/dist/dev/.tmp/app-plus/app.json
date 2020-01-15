@@ -2,13 +2,11 @@
   "pages": [
     "pages/index/index",
     "pages/component/component",
-    "pages/details/details",
-    "pages/index/index"
+    "pages/details/details"
   ],
   "window": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "新闻模版",
-    "navigationBarBackgroundColor": "#ec706b",
     "backgroundColor": "#f8f8f8"
   },
   "nvue": {
@@ -25,13 +23,13 @@
       }
     }
   },
-  "nvueCompiler": "weex",
+  "nvueCompiler": "uni-app",
   "renderer": "auto",
   "splashscreen": {
     "alwaysShowBeforeRender": true,
     "autoclose": false
   },
   "appname": "AdnmbMiniProgram",
-  "compilerVersion": "2.3.3",
+  "compilerVersion": "2.5.1",
   "usingComponents": {}
 }
