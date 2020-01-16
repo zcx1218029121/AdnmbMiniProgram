@@ -11,6 +11,5 @@
     "navigationBarTitleText": "新闻模版",
     "backgroundColor": "#f8f8f8"
   },
-  "usingComponents": {},
-  "sitemapLocation": "sitemap90.json"
+  "usingComponents": {}
 }

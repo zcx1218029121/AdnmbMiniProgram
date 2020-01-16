@@ -8508,7 +8508,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页", "usingComponents": { "mix-pulldown-refresh": "/components/mix-pulldown-refresh/mix-pulldown-refresh", "mix-load-more": "/components/mix-load-more/mix-load-more" }, "usingAutoImportComponents": {} }, "pages/component/component": { "navigationBarTitleText": "组件使用示例", "usingComponents": { "mix-pulldown-refresh": "/components/mix-pulldown-refresh/mix-pulldown-refresh", "mix-load-more": "/components/mix-load-more/mix-load-more" }, "usingAutoImportComponents": {} }, "pages/details/details": { "navigationBarTitleText": "详情", "usingComponents": { "mix-loading": "/components/mix-loading/mix-loading" }, "usingAutoImportComponents": {} }, "pages/nvue/nvue": { "navigationBarTitleText": "串", "usingComponents": {}, "usingAutoImportComponents": {} } }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "新闻模版", "backgroundColor": "#f8f8f8" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/component/component": { "navigationBarTitleText": "组件使用示例" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/nvue/nvue": { "navigationBarTitleText": "串" } }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "新闻模版", "backgroundColor": "#f8f8f8" } };exports.default = _default;
 
 /***/ }),
 /* 8 */

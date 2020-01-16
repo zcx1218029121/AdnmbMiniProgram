@@ -13,7 +13,7 @@
 					
 					<rich-text :nodes="info.data.content"></rich-text>
 					<view class="grid flex-sub padding-lr" :class="isCard?'col-3 grid-square':'col-1'">
-					<view  class="bg-img" :class="isCard?'':'only-img'" :style="'background-image:url(https://nmbimg.fastmirror.org/image/'+info.data.img+info.data.ext+');height:200px;'"></view>
+					<view  v-if="info.data.img"  class="bg-img" :class="isCard?'':'only-img'" :style="'background-image:url(https://nmbimg.fastmirror.org/image/'+info.data.img+info.data.ext+');height:200px;'"></view>
 					</view>
 					<view class="actions" v-show="loading === false">
 						<view class="action-item">
