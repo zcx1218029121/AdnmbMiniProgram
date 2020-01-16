@@ -311,7 +311,6 @@ var windowWidth = 0,scrollTimer = false,tabBar;var _default =
         tabItem.index = 0;
       }
       tabItem.index = tabItem.index + 1;
-      //setTimeout模拟异步请求数据
       this.$api.main(tabItem.id, tabItem.index).then(function (res) {
         var list = res.data;
         if (type === 'refresh') {
@@ -337,6 +336,12 @@ var windowWidth = 0,scrollTimer = false,tabBar;var _default =
 
       });
 
+
+    },
+    switchMe: function switchMe() {
+      uni.showToast({
+        title: '还在开发。。。',
+        duration: 2000 });
 
     },
     //新闻详情

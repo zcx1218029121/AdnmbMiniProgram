@@ -70,12 +70,12 @@
 				<view class="cuIcon-homefill"></view> 首页
 			</view>
 			<view class="action text-gray add-action">
-				<button class="cu-btn cuIcon-add bg-green shadow"></button>
+				<button class="cu-btn cuIcon-add bg-green shadow" @tap="switchMe"></button>
 				发布
 			</view>
 			
 			<view class="action text-gray">
-				<view class="cuIcon-my">
+				<view class="cuIcon-my" @tap="switchMe">
 					
 				</view>
 				我的
@@ -165,7 +165,6 @@
 					tabItem.index = 0
 				}
 				   tabItem.index = tabItem.index+1
-				//setTimeout模拟异步请求数据
 				    this.$api.main(tabItem.id,tabItem.index).then((res)=>{
 						let list = res.data;
 						if(type === 'refresh'){
@@ -192,6 +191,12 @@
 					})
 					
 				
+			},
+			switchMe(){
+				uni.showToast({
+				    title: '还在开发。。。',
+				    duration: 2000
+				});
 			},
 			//新闻详情
 			navToDetails(item){

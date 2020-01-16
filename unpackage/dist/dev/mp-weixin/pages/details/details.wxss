@@ -224,12 +224,17 @@ page {
   position: relative;
 }
 .eva-item .image {
-    width: 60rpx;
-    height: 60rpx;
+    width: 70rpx;
+    height: 70rpx;
     border-radius: 50px;
     -webkit-flex-shrink: 0;
             flex-shrink: 0;
     margin-right: 24rpx;
+}
+.eva-item .image-ext {
+    width: 100%;
+    -webkit-flex-shrink: 0;
+            flex-shrink: 0;
 }
 .eva-item:after {
     content: '';
