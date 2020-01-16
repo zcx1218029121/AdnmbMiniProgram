@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/details/details",
     "pages/me/me",
-    "pages/home/home"
+    "pages/home/home",
+    "pages/post/post"
   ],
   "subPackages": [],
   "window": {

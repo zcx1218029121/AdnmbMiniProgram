@@ -28,6 +28,10 @@
             "path" : "pages/home/home",
             "style" : {}
         }
+        ,{
+            "path" : "pages/post/post",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

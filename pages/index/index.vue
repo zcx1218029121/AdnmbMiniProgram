@@ -7,7 +7,7 @@
 			<view :class="'action '+ current(1)"  @click="navToHome">
 				<view class="cuIcon-homefill"></view> 首页
 			</view>
-			<view class="action text-gray add-action">
+			<view class="action text-gray add-action" @click="navToPost">
 				<button class="cu-btn cuIcon-add bg-green shadow" ></button>
 				发布
 			</view>
@@ -51,6 +51,10 @@
 				}
 			},navToHome(){
 				this.index = 1
+			},navToPost(){
+				uni.navigateTo({
+					url:'/pages/post/post'
+				})
 			}
 		}
 		}

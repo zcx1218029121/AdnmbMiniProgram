@@ -18,7 +18,7 @@
 			<swiper 
 				id="swiper"
 				class="swiper-box" 
-				:duration="300" 
+				:duration="30" 
 				:current="tabCurrentIndex" 
 				@change="changeTab"
 			>

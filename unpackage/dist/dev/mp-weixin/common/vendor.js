@@ -7594,9 +7594,9 @@ module.exports = g;
 
 /***/ }),
 /* 4 */
-/*!*****************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/pages.json ***!
-  \*****************************************************************/
+/*!**************************************!*\
+  !*** E:/AdnmbMiniProgram/pages.json ***!
+  \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8501,20 +8501,20 @@ module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2
 
 /***/ }),
 /* 7 */
-/*!**********************************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/pages.json?{"type":"style"} ***!
-  \**********************************************************************************/
+/*!*******************************************************!*\
+  !*** E:/AdnmbMiniProgram/pages.json?{"type":"style"} ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/me/me": {}, "pages/home/home": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "A岛mini", "backgroundColor": "#f8f8f8" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/me/me": {}, "pages/home/home": {}, "pages/post/post": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "A岛mini", "backgroundColor": "#f8f8f8" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
-/*!*********************************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/pages.json?{"type":"stat"} ***!
-  \*********************************************************************************/
+/*!******************************************************!*\
+  !*** E:/AdnmbMiniProgram/pages.json?{"type":"stat"} ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8648,9 +8648,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 15 */
-/*!************************************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/common/vmeitime-http/index.js ***!
-  \************************************************************************************/
+/*!*********************************************************!*\
+  !*** E:/AdnmbMiniProgram/common/vmeitime-http/index.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8727,9 +8727,9 @@ exports.getInfo = getInfo;var _default = {
 
 /***/ }),
 /* 16 */
-/*!****************************************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/common/vmeitime-http/interface.js ***!
-  \****************************************************************************************/
+/*!*************************************************************!*\
+  !*** E:/AdnmbMiniProgram/common/vmeitime-http/interface.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8934,9 +8934,9 @@ function _reslog(res) {
 /* 21 */,
 /* 22 */,
 /* 23 */
-/*!**************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/json.js ***!
-  \**************************************************************/
+/*!***********************************!*\
+  !*** E:/AdnmbMiniProgram/json.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9433,9 +9433,9 @@ var newsList = [{
 
 /***/ }),
 /* 24 */
-/*!**************************************************************!*\
-  !*** D:/Documents/HBuilderProjects/AdnmbMiniProgram/util.js ***!
-  \**************************************************************/
+/*!***********************************!*\
+  !*** E:/AdnmbMiniProgram/util.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
