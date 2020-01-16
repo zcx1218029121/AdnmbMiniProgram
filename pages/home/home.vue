@@ -1,30 +1,80 @@
 <template>
 	<view class="pager-content">
-		<home></home>
+		
 		<!-- 顶部选项卡 -->
-		<view class="cu-bar tabbar margin-bottom-xl bg-white bottom">
-			<view class="action text-green">
-				<view class="cuIcon-homefill"></view> 首页
-			</view>
-			<view class="action text-gray add-action">
-				<button class="cu-btn cuIcon-add bg-green shadow" @tap="navToMe"></button>
-				发布
-			</view>
-			
-			<view class="action text-gray" @click="navToMe">
-				<view class="cuIcon-my">
-				</view>
-				我的
-			</view>
-		</view>
-		</view>
+		<scroll-view id="nav-bar" class="nav-bar" scroll-x scroll-with-animation :scroll-left="scrollLeft">
+			<view 
+				v-for="(item,index) in tabBars" :key="item.id"
+				class="nav-item"
+				:class="{current: index === tabCurrentIndex}"
+				:id="'tab'+index"
+				@click="changeTab(index)"
+			>{{item.name}}</view>
+		</scroll-view>
+		
+		<!-- 下拉刷新组件 -->
+		<mix-pulldown-refresh ref="mixPulldownRefresh" class="panel-content" :top="200" @refresh="onPulldownReresh" @setEnableScroll="setEnableScroll">
+			<!-- 内容部分 -->
+			<swiper 
+				id="swiper"
+				class="swiper-box" 
+				:duration="300" 
+				:current="tabCurrentIndex" 
+				@change="changeTab"
+			>
+				<swiper-item v-for="tabItem in tabBars" :key="tabItem.id">
+					<scroll-view 
+						class="panel-scroll-box" 
+						:scroll-y="enableScroll" 
+						@scrolltolower="loadMore"
+						>
+	
+						<view v-for="(item, index) in tabItem.newsList" :key="index" class="cu-card dynamic" @click="navToDetails(item)">
+							<view class="cu-item shadow">
+								<view class="cu-list menu-avatar">
+									<view class="cu-item">
+										<view :class="'cu-avatar lg round bg-'+item.bg"> {{item.icon}}</view>
+										
+										<view class="content flex-sub">
+											<view>{{item.userid}}</view>
+											<view class="text-gray text-sm flex justify-between" v-html="item.now">
+						
+											</view>
+										</view>
+									</view>
+								</view>
+								<view class="text-content"style=" white-space: pre-wrap;">
+									<rich-text :nodes="item.content"></rich-text>
+									<!-- {{item.content}} -->
+								</view>
+								<view class="grid flex-sub padding-lr" :class="isCard?'col-3 grid-square':'col-1'">
+									<view v-if="item.img" class="bg-img" :class="isCard?'':'only-img'" :style="'background-image:url(https://nmbimg.fastmirror.org/thumb/'+item.img+item.ext+');'">
+									</view>
+								</view>
+								<view class="text-gray text-sm text-right padding">
+									<text class="cuIcon-messagefill margin-lr-xs"></text> {{item.replyCount}}
+								</view>
+						
+								
+							</view>
+						</view>
+						<!-- 上滑加载更多组件 -->
+						<mix-load-more :status="tabItem.loadMoreStatus"></mix-load-more>
+					</scroll-view>
+				</swiper-item>
+			</swiper>
+		</mix-pulldown-refresh>
+		<!-- 底部导航栏 -->
+		
+		
+	</view>
+	
 	
 </template>
 
 <script>
 	import json from '@/json'
 	import util from '@/util'
-	import home from '@/pages/home/home'
 	import mixPulldownRefresh from '@/components/mix-pulldown-refresh/mix-pulldown-refresh';
 	import mixLoadMore from '@/components/mix-load-more/mix-load-more';
 	let windowWidth = 0, scrollTimer = false, tabBar;
@@ -32,7 +82,6 @@
 		components: {
 			mixPulldownRefresh,
 			mixLoadMore,
-			home
 		},
 		data() {
 			return {
@@ -229,7 +278,8 @@
 			//获得元素的size
 			getElSize(id) { 
 				return new Promise((res, rej) => {
-					let el = uni.createSelectorQuery().select('#' + id);
+					// 修改 查询控件的范围为自定义插件
+					let el = uni.createSelectorQuery().in(this).select('#' + id);
 					el.fields({
 						size: true,
 						scrollOffset: true,
@@ -290,13 +340,6 @@
 				width: 50%;
 			}
 		}
-	}
-	.bottom{
-		position: fixed;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
-		margin: 0px;
 	}
 
 	.swiper-box{

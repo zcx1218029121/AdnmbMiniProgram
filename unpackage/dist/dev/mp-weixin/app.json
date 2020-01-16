@@ -1,14 +1,14 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/component/component",
     "pages/details/details",
-    "pages/nvue/nvue"
+    "pages/me/me",
+    "pages/home/home"
   ],
   "subPackages": [],
   "window": {
     "navigationBarTextStyle": "white",
-    "navigationBarTitleText": "新闻模版",
+    "navigationBarTitleText": "A岛mini",
     "backgroundColor": "#f8f8f8"
   },
   "usingComponents": {}

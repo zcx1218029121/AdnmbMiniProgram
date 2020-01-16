@@ -9,16 +9,7 @@
 		    	}
 		    }
 		}
-	    ,{
-            "path" : "pages/component/component",
-            "style" : {
-				"navigationBarTitleText" : "组件使用示例",
-				"app-plus": {
-					"bounce": "none"
-				}
-			}
-        },
-
+,
 		{
 		    "path" : "pages/details/details",
 		    "style" : {
@@ -28,25 +19,19 @@
 					"bounce": "none"
 				}
 			}
-		},
-        {
-            "path" : "pages/nvue/nvue",
-            "style" : {
-            	"navigationBarTitleText" : "串",
-            	"app-plus": {
-            		// #ifdef APP-PLUS
-            		"titleNView": false,
-            		"navigationBarTextStyle": "white",
-            		// #endif
-            		"bounce": "none"
-            	}
-            }
+		}
+        ,{
+            "path" : "pages/me/me",
+            "style" : {}
         }
-        
+        ,{
+            "path" : "pages/home/home",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "新闻模版",
+		"navigationBarTitleText": "A岛mini",
 		"backgroundColor": "#f8f8f8"
 	},
 	"condition" : { //模式配置，仅开发期间生效
