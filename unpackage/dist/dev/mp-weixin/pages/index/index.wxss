@@ -62,6 +62,19 @@ page {
     border-bottom: 2px solid #000;
 }
 
+
+.page {
+	height: 100Vh;
+	width: 100vw;
+}
+.bar {
+	margin: 0rpx;
+	position: fixed;
+	left: 0rpx;
+	right: 0rpx;
+	bottom: 0rpx;
+}
+
 @charset "UTF-8";
 /* 页面左右间距 */
 /* 文字尺寸 */
