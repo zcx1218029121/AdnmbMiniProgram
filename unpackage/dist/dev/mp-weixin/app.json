@@ -12,5 +12,6 @@
     "navigationBarTitleText": "A岛mini",
     "backgroundColor": "#f8f8f8"
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
 }

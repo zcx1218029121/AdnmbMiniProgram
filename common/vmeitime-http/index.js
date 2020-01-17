@@ -60,7 +60,17 @@ export const getInfo = (id,index) =>{
 		method: 'GET'
 	})
 }
-
+// // 发布新串 测试用饼干
+// export const postString=(content,id,imge,water)=>{
+// 	return http.request({method:'post',
+// 	baseUrl:'https://nmb.fastmirror.org/',
+// 	url:'Home/Forum/doPostThread.html',
+// 	header: {
+// 		'Content-Type':'application/json;charset=UTF-8',
+// 		'Content-Type':'application/x-www-form-urlencoded',
+// 		'Cookie':'userhash=h%3C%EA%FE%E2%81%F0%0D%A8%24%D5%8E%F5u%13%23%0D%B8%D6%60H%CEYE;'
+// 	})
+// }
 
 // 默认全部导出  import api from '@/common/vmeitime-http/'
 export default {

@@ -2,7 +2,7 @@
 	<view>
 		<!-- !!!!! placeholder 在ios表现有偏移 建议使用 第一种样式 -->
 		<view class="cu-form-group margin-top">
-			<textarea maxlength="-1" :disabled="modalName!=null" @input="textareaAInput" placeholder="期待你每一次友善的发言!"></textarea>
+			<textarea maxlength="-1"  :disabled="modalName!=null" @input="textareaAInput" placeholder="期待你每一次友善的发言!"></textarea>
 		</view>
 		
 		<view class="cu-bar bg-white margin-top">
@@ -38,6 +38,7 @@
 				</picker>
 			</view>
 			
+			<button class="cu-btn bg-green lg btn-post" @click="doPost">发布新串</button>
 			
 		</form>
 		
@@ -55,7 +56,8 @@
 				imgList: [],
 				modalName: null,
 				textareaAValue: '',
-				textareaBValue: ''
+				textareaBValue: '',
+				content:''
 			}
 		},
 		onLoad() {
@@ -63,7 +65,6 @@
 		},
 		methods: {
 			PickerChange(e) {
-				console.log(e)
 				this.index = e.detail.value
 			},
 			ChooseImage() {
@@ -92,11 +93,31 @@
 				
 			},setWater(){
 				
+			},doPost(){
+				if(this.index===-1){
+					uni.showToast({
+						title:"请选择板块"
+					})
+					return
+				}
+				console.log(''==false)
+				if(!this.content && this.imgList.length ==0){
+					uni.showToast({
+						title:"串必须有内容"
+					})
+					return
+				}
+			},
+			textareaAInput(e){
+				this.content =e.detail.value
+			}
 			}
 		}
-	}
 </script>
 
 <style>
-
+.btn-post{
+	width: 100%;
+	margin-top: 20rpx;
+}
 </style>
