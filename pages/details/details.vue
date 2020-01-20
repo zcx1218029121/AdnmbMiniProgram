@@ -17,7 +17,7 @@
 					<view class="grid flex-sub padding-lr" :class="isCard?'col-3 grid-square':'col-1'">
 					<view @tap="ViewImage" :data-url="'https://nmbimg.fastmirror.org/image/'+info.data.img+info.data.ext"  v-if="info.data.img"  class="bg-img" :class="isCard?'':'only-img'" :style="'background-image:url(https://nmbimg.fastmirror.org/image/'+info.data.img+info.data.ext+');height:200px;'"></view>
 					</view>
-					<view class="actions" v-show="loading === false">
+				<!-- 	<view class="actions" v-show="loading === false">
 						<view class="action-item">
 							<text class="yticon icon-dianzan-ash"></text>
 							<text>75</text>
@@ -34,7 +34,7 @@
 							<text class="yticon icon-shoucang active"></text>
 							<text>收藏</text>
 						</view>
-					</view>
+					</view> -->
 				</view>
 				
 				<view class="container" v-show="loading === false">
@@ -71,8 +71,8 @@
 								<text :style="item.userid==info.data.userid?'color:black':''">{{item.userid}}</text>
 								<text>{{item.now}}</text>
 								<view class="zan-box">
-									<text>{{item.zan}}</text>
-									<text class="yticon icon-shoucang"></text>
+									<text>NO.{{item.id}}</text>
+									<!-- <text class="yticon icon-shoucang"></text> -->
 								</view>
 								
 								<rich-text class="content" :nodes="item.content"></rich-text>
@@ -94,13 +94,14 @@
 			<view class="input-box">
 				<text class="yticon icon-huifu"></text>
 				<input 
+				@input="inputCommit"
 					class="input"
 					type="text" 
 					placeholder="点评一下把.." 
 					placeholder-style="color:#adb1b9;"
 				/>
 			</view>
-			<text class="confirm-btn">提交</text>
+			<text class="confirm-btn" @tap="commit">提交</text>
 		</view>
 	</view>
 </template>
@@ -115,6 +116,7 @@
 		},
 		data() {
 			return {
+				content:'',
 				loading: true,
 				detailData: {},
 				info:{},
@@ -184,6 +186,27 @@
 					urls: list,
 					current: e.currentTarget.dataset.url
 				});
+			},inputCommit(e){
+				this.content = e.detail.value
+			},commit(){
+				this.$api.reply(this.info.data.id,this.content).then((res)=>{
+					if(res.data.search("成功") != -1){
+						uni.showToast({
+							title: "回复成功",
+						})
+						this.index = 1
+						this.replyList=[]
+						this.loadDetail(this.detailData.title,1)
+						this.content = ''
+						this.lastPager = false
+					}else if(res.data.search("饼干") != -1){
+						uni.showToast({
+							title: "没有饼干",
+							
+						})
+					}
+				})
+				
 			}
 		}
 	}

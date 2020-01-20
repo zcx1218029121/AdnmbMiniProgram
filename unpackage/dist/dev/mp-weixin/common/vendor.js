@@ -8508,7 +8508,7 @@ module.exports = {"_from":"@dcloudio/uni-stat@alpha","_id":"@dcloudio/uni-stat@2
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/me/me": {}, "pages/home/home": {}, "pages/post/post": {} }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "A岛mini", "backgroundColor": "#f8f8f8" } };exports.default = _default;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/index": { "navigationBarTitleText": "首页" }, "pages/details/details": { "navigationBarTitleText": "详情" }, "pages/me/me": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/home/home": {}, "pages/post/post": { "usingComponents": {}, "usingAutoImportComponents": {} }, "pages/cookies/cookies": { "usingComponents": {}, "usingAutoImportComponents": {} } }, "globalStyle": { "navigationBarTextStyle": "white", "navigationBarTitleText": "A岛mini", "backgroundColor": "#f8f8f8" } };exports.default = _default;
 
 /***/ }),
 /* 8 */
@@ -8655,14 +8655,14 @@ function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.getInfo = exports.getClass = exports.main = exports.banner = exports.test = void 0;var _interface = _interopRequireDefault(__webpack_require__(/*! ./interface */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = exports.reply = exports.postString = exports.getInfo = exports.getClass = exports.main = exports.banner = exports.test = void 0;var _interface = _interopRequireDefault(__webpack_require__(/*! ./interface */ 16));
+var _cookie = _interopRequireDefault(__webpack_require__(/*! ../cookie.js */ 17));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 /**
-                                                                                                                                                                                                                                                                                                                                                       * 将业务所有接口统一起来便于维护
-                                                                                                                                                                                                                                                                                                                                                       * 如果项目很大可以将 url 独立成文件，接口分成不同的模块
-                                                                                                                                                                                                                                                                                                                                                       * 
-                                                                                                                                                                                                                                                                                                                                                       */
-
+                                                                                                                                                             * 将业务所有接口统一起来便于维护
+                                                                                                                                                             * 如果项目很大可以将 url 独立成文件，接口分成不同的模块
+                                                                                                                                                             * 
+                                                                                                                                                             */
 // 单独导出(测试接口) import {test} from '@/common/vmeitime-http/'
 var test = function test(data) {
   /* http.config.baseUrl = "http://localhost:8080/api/"
@@ -8672,6 +8672,7 @@ var test = function test(data) {
                                 		"token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                                 	}
                                 } */
+  //h%3C%EA%FE%E2%81%F0%0D%A8%24%D5%8E%F5u%13%23%0D%B8%D6%60H%CEYE
   //设置请求结束后拦截器
   _interface.default.interceptor.response = function (response) {
     console.log('个性化response....');
@@ -8728,12 +8729,48 @@ var getInfo = function getInfo(id, index) {
 // 		'Cookie':'userhash=h%3C%EA%FE%E2%81%F0%0D%A8%24%D5%8E%F5u%13%23%0D%B8%D6%60H%CEYE;'
 // 	})
 // }
+exports.getInfo = getInfo;var postString = function postString(content, id, water) {
+
+  return _interface.default.request({
+    baseUrl: 'https://nmb.fastmirror.org/',
+    url: 'Home/Forum/doPostThread.html',
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie': 'userhash=' + uni.getStorageSync('cookie') },
+
+    data: {
+      'content': content,
+      'fid': id,
+      'water': water },
+
+    method: 'POST' });
+
+};exports.postString = postString;
+var reply = function reply(resto, content) {
+  return _interface.default.request({
+    baseUrl: 'https://nmb.fastmirror.org/',
+    url: 'Home/Forum/doReplyThread.html',
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie': 'userhash=' + uni.getStorageSync('cookie') },
+
+    data: {
+      "resto": resto,
+      "content": content },
+
+    method: 'POST' });
+
+
+};
 
 // 默认全部导出  import api from '@/common/vmeitime-http/'
-exports.getInfo = getInfo;var _default = {
+exports.reply = reply;var _default = {
   main: main,
   getClass: getClass,
-  getInfo: getInfo };exports.default = _default;
+  getInfo: getInfo,
+  postString: postString,
+  reply: reply };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 /* 16 */
@@ -8937,13 +8974,39 @@ function _reslog(res) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 17 */,
+/* 17 */
+/*!********************************************!*\
+  !*** E:/AdnmbMiniProgram/common/cookie.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;function getCookies() {
+  var result = null;
+  uni.getStorage({
+    key: 'cookie',
+    success: function success(res) {
+      result = res.data;
+    } });
+
+  return result;
+}var _default =
+
+
+
+{
+  getCookies: getCookies };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 18 */,
 /* 19 */,
 /* 20 */,
 /* 21 */,
 /* 22 */,
-/* 23 */
+/* 23 */,
+/* 24 */
 /*!***********************************!*\
   !*** E:/AdnmbMiniProgram/json.js ***!
   \***********************************/
@@ -9442,7 +9505,7 @@ var newsList = [{
   colorlist: colorlist };exports.default = _default;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /*!***********************************!*\
   !*** E:/AdnmbMiniProgram/util.js ***!
   \***********************************/
@@ -9450,7 +9513,7 @@ var newsList = [{
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _json = _interopRequireDefault(__webpack_require__(/*! @/json */ 23));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _json = _interopRequireDefault(__webpack_require__(/*! @/json */ 24));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 function getRandomBackground() {
   return _json.default.colorlist[parseInt(Math.random() * 11 + 1)];
 }var _default =
@@ -9459,23 +9522,23 @@ function getRandomBackground() {
   getRandomBackground: getRandomBackground };exports.default = _default;
 
 /***/ }),
-/* 25 */,
 /* 26 */,
 /* 27 */,
 /* 28 */,
 /* 29 */,
-/* 30 */
+/* 30 */,
+/* 31 */
 /*!**********************************************************!*\
   !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
   \**********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! regenerator-runtime */ 31);
+module.exports = __webpack_require__(/*! regenerator-runtime */ 32);
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /*!************************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
   \************************************************************/
@@ -9506,7 +9569,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(/*! ./runtime */ 32);
+module.exports = __webpack_require__(/*! ./runtime */ 33);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -9522,7 +9585,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /*!*****************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime.js ***!
   \*****************************************************/

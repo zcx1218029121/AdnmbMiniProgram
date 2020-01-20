@@ -1,11 +1,11 @@
 import http from './interface'
+import cookie from '../cookie.js'
 
 /**
  * 将业务所有接口统一起来便于维护
  * 如果项目很大可以将 url 独立成文件，接口分成不同的模块
  * 
  */
-
 // 单独导出(测试接口) import {test} from '@/common/vmeitime-http/'
 export const test = (data) => {
 	/* http.config.baseUrl = "http://localhost:8080/api/"
@@ -15,6 +15,7 @@ export const test = (data) => {
 			"token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 		}
 	} */
+	//h%3C%EA%FE%E2%81%F0%0D%A8%24%D5%8E%F5u%13%23%0D%B8%D6%60H%CEYE
 	//设置请求结束后拦截器
 	http.interceptor.response = (response) => {
 		console.log('个性化response....')
@@ -71,10 +72,45 @@ export const getInfo = (id,index) =>{
 // 		'Cookie':'userhash=h%3C%EA%FE%E2%81%F0%0D%A8%24%D5%8E%F5u%13%23%0D%B8%D6%60H%CEYE;'
 // 	})
 // }
+export const postString=(content,id,water)=>{
+	
+	return http.request({
+		baseUrl:'https://nmb.fastmirror.org/',
+		url:'Home/Forum/doPostThread.html',
+		header:{
+			'Content-Type':'application/x-www-form-urlencoded',
+			'Cookie':'userhash='+uni.getStorageSync('cookie')
+		},
+		data:{
+			'content':content,
+			'fid':id,
+			'water':water
+		},
+		method:'POST'
+	})
+}
+export const reply=(resto,content)=>{
+	return http.request({
+		baseUrl:'https://nmb.fastmirror.org/',
+		url:'Home/Forum/doReplyThread.html',
+		header:{
+			'Content-Type':'application/x-www-form-urlencoded',
+			'Cookie':'userhash='+uni.getStorageSync('cookie')
+		},
+		data : {
+		        "resto": resto,
+		        "content": content
+		    },
+			method:'POST'
+	})
+	
+}
 
 // 默认全部导出  import api from '@/common/vmeitime-http/'
 export default {
 	main,
 	getClass,
-	getInfo
+	getInfo,
+	postString,
+	reply
 }

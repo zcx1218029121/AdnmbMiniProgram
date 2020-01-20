@@ -2,7 +2,7 @@
 	<view>
 		<!-- !!!!! placeholder 在ios表现有偏移 建议使用 第一种样式 -->
 		<view class="cu-form-group margin-top">
-			<textarea maxlength="-1"  :disabled="modalName!=null" @input="textareaAInput" placeholder="期待你每一次友善的发言!"></textarea>
+			<textarea maxlength="-1"  :show-confirm-bar=false :disabled="modalName!=null" @input="textareaAInput" placeholder="期待你每一次友善的发言!"></textarea>
 		</view>
 		
 		<view class="cu-bar bg-white margin-top">
@@ -10,7 +10,7 @@
 					图片上传
 				</view>
 				<view class="action">
-					<text class="text-df margin-right-sm">去水印</text>
+					<text class="text-df margin-right-sm">水印</text>
 					<switch @change="setWater" :class="noWater?'checked':''" color="#39B54A"></switch>
 				</view>
 			</view>
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+	//postString=(content,id,imge,water)
 	import json from '@/json'
 	export default {
 		data() {
@@ -54,6 +55,7 @@
 				picker:[],
 				noWater:true,
 				imgList: [],
+				imgFile:[],
 				modalName: null,
 				textareaAValue: '',
 				textareaBValue: '',
@@ -62,6 +64,7 @@
 		},
 		onLoad() {
 			this.picker = json.tabList
+			
 		},
 		methods: {
 			PickerChange(e) {
@@ -69,15 +72,13 @@
 			},
 			ChooseImage() {
 				uni.chooseImage({
-					count: 4, //默认9
+					count: 1, //默认9
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					sourceType: ['album'], //从相册选择
 					success: (res) => {
-						if (this.imgList.length != 0) {
-							this.imgList = this.imgList.concat(res.tempFilePaths)
-						} else {
+
 							this.imgList = res.tempFilePaths
-						}
+							this.imgFile = res.tempFiles
 					}
 				});
 			},
@@ -92,21 +93,58 @@
 				this.imgList.splice(e.currentTarget.dataset.index, 1)		
 				
 			},setWater(){
-				
+				this.noWater = !this.noWater
+				console.log(this.noWater)
 			},doPost(){
+				uni.showToast({
+					title:"正在发串..."
+				})
 				if(this.index===-1){
 					uni.showToast({
 						title:"请选择板块"
 					})
 					return
 				}
-				console.log(''==false)
 				if(!this.content && this.imgList.length ==0){
 					uni.showToast({
 						title:"串必须有内容"
 					})
 					return
 				}
+				if(this.imgList.length ==0){
+					this.$api.postString(this.content,this.picker[this.index].id,true).then((res)=>{
+						if(res.data.search("成功")){
+							uni.navigateBack();
+						}else if(res.data.search("饼干")){
+							
+							uni.showToast({
+								title:"没有饼干"
+							})
+							}
+							
+					})
+				}else{
+					uni.uploadFile({
+					           url: 'https://nmb.fastmirror.org/Home/Forum/doPostThread.html', //仅为示例，非真实的接口地址
+					           filePath: this.imgList[0],
+					           name: 'image',
+									header:{
+										'Cookie':'userhash='+uni.getStorageSync('cookie')
+									},
+					           formData: {
+					               'content':this.content,
+					               'fid':this.picker[this.index].id,
+					               'water':false
+					           },
+					           success: (uploadFileRes) => {
+					              // uni.hideLoading()({
+					              // 	title:"正在发串..."
+					              // })
+								  uni.navigateBack();
+					           }
+					       });
+				}
+				
 			},
 			textareaAInput(e){
 				this.content =e.detail.value

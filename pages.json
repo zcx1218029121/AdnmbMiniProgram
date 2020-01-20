@@ -32,6 +32,10 @@
             "path" : "pages/post/post",
             "style" : {}
         }
+        ,{
+            "path" : "pages/cookies/cookies",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

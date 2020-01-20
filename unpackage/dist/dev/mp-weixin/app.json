@@ -4,7 +4,8 @@
     "pages/details/details",
     "pages/me/me",
     "pages/home/home",
-    "pages/post/post"
+    "pages/post/post",
+    "pages/cookies/cookies"
   ],
   "subPackages": [],
   "window": {
